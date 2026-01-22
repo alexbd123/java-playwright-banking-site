@@ -10,17 +10,29 @@ public class LoginPage {
     private final Locator usernameInput;
     private final Locator passwordInput;
     private final Locator loginButton;
-    
+    private final Locator registerButton;
+    private final Locator registerButtonClickedMessage;
+
     public LoginPage(Page page) {
         this.page = page;
         this.usernameInput = page.locator("input[name='username']");
         this.passwordInput = page.locator("input[name='password']");
         this.loginButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Log In"));
+        this.registerButton = page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Register"));
+        this.registerButtonClickedMessage = page.getByTitle("Signing up is easy!");
     }
 
     public void navigate() {
-    page.navigate(TestConfig.getBaseUrl());
-  }
+        page.navigate(TestConfig.getBaseUrl());
+    }
+
+    public void clickRegisterButton() {
+        registerButton.click();
+    }
+
+    public boolean wasRegisterButtonClickedSuccessfully() {
+        return registerButtonClickedMessage.isVisible();
+    }
 
     public void login(String username, String password) {
         usernameInput.fill(username);
