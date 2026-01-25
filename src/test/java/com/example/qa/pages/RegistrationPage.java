@@ -25,6 +25,7 @@ public class RegistrationPage {
     private final Locator signUpMessage;
     private final Locator submitRegistrationButton;
     private final Locator registrationSuccessfulMessage;
+    private final Locator registrationFailedMessage;
 
     public RegistrationPage(Page page) {
         this.page = page;
@@ -43,6 +44,7 @@ public class RegistrationPage {
         this.signUpMessage = page.getByRole(AriaRole.HEADING, new Page.GetByRoleOptions().setName("Signing up is easy!"));
         this.submitRegistrationButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("REGISTER"));
         this.registrationSuccessfulMessage = page.getByText("Your account was created successfully. You are now logged in.");
+        this.registrationFailedMessage = page.locator("#customer\\.username\\.errors");
 
     }
 
@@ -61,6 +63,11 @@ public class RegistrationPage {
 
     public boolean isRegistrationSuccessfulDisplayed() {
         return registrationSuccessfulMessage.isVisible();
+    }
+
+    public boolean isRegistrationFailedDisplayed() {
+        return registrationFailedMessage.isVisible() &&
+                registrationFailedMessage.allTextContents().contains("This username already exists.");
     }
 
     public void fillUsername(String username) {

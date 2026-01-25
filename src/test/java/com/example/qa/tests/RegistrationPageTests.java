@@ -24,8 +24,14 @@ public class RegistrationPageTests extends BaseTest {
     }
 
     @Test
-    void userCanSubmitRegistration() {
+    void validUserCanSubmitRegistration() {
         registrationPage.registerValidUser(UserFactory.validRandomUser());
         Assertions.assertTrue(registrationPage.isRegistrationSuccessfulDisplayed());
+    }
+
+    @Test
+    void invalidUserCannotSubmitRegistration() {
+        registrationPage.registerValidUser(UserFactory.invalidRandomUser());
+        Assertions.assertTrue(registrationPage.isRegistrationFailedDisplayed());
     }
 }
