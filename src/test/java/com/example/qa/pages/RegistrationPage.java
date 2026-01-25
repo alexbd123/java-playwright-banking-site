@@ -5,6 +5,8 @@ import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.Locator;
 
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+
 public class RegistrationPage {
 
     public static final String URL = "https://parabank.parasoft.com/parabank/register.htm";
@@ -34,6 +36,7 @@ public class RegistrationPage {
     private final Locator noPasswordErrorMessage;
     private final Locator noConfirmPasswordErrorMessage;
     private final Locator logOutLink;
+    private final Locator registrationPageLink;
 
 
     public RegistrationPage(Page page) {
@@ -63,6 +66,7 @@ public class RegistrationPage {
         this.noPasswordErrorMessage = page.locator("#customer\\.password\\.errors");
         this.noConfirmPasswordErrorMessage = page.locator("#repeatedPassword\\.errors");
         this.logOutLink = page.getByText("Log Out");
+        this.registrationPageLink = page.locator("//a[contains(text(),'Register')]");
 
     }
 
@@ -182,6 +186,14 @@ public class RegistrationPage {
 
     public void clickSubmitRegistrationButton() {
         submitRegistrationButton.click();
+    }
+
+    public void registerValidUserAndLogOut(User user) {
+        fillRegistrationFieldsWithValidUser(user);
+        submitRegistrationButton.click();
+        assertThat(registrationSuccessfulMessage).isVisible();
+        logOutLink.click();
+        assertThat(registrationPageLink).isVisible();
     }
 
     public void clickLogOutButton() {
