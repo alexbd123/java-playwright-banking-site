@@ -1,15 +1,14 @@
 package com.example.qa.pages;
 
-import com.example.qa.config.TestConfig;
 import com.example.qa.models.User;
-import com.example.qa.models.UserFactory;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.Locator;
 
 public class RegistrationPage {
 
-    private final Page page;
+    public static final String URL = "https://parabank.parasoft.com/parabank/register.htm";
+
     private final Locator firstNameInput;
     private final Locator lastNameInput;
     private final Locator addressInput;
@@ -21,14 +20,23 @@ public class RegistrationPage {
     private final Locator usernameInput;
     private final Locator passwordInput;
     private final Locator confirmPasswordInput;
-    private final Locator registrationPageLink;
     private final Locator signUpMessage;
     private final Locator submitRegistrationButton;
     private final Locator registrationSuccessfulMessage;
-    private final Locator registrationFailedMessage;
+    private final Locator noFirstNameErrorMessage;
+    private final Locator noLastNameErrorMessage;
+    private final Locator noAddressErrorMessage;
+    private final Locator noCityErrorMessage;
+    private final Locator noStateErrorMessage;
+    private final Locator noZipCodeErrorMessage;
+    private final Locator noSsnErrorMessage;
+    private final Locator noUsernameErrorMessage;
+    private final Locator noPasswordErrorMessage;
+    private final Locator noConfirmPasswordErrorMessage;
+
 
     public RegistrationPage(Page page) {
-        this.page = page;
+
         this.firstNameInput = page.locator("#customer\\.firstName");
         this.lastNameInput = page.locator("#customer\\.lastName");
         this.addressInput = page.locator("#customer\\.address\\.street");
@@ -40,41 +48,122 @@ public class RegistrationPage {
         this.usernameInput = page.locator("#customer\\.username");
         this.passwordInput = page.locator("#customer\\.password");
         this.confirmPasswordInput = page.locator("#repeatedPassword");
-        this.registrationPageLink = page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Register"));
         this.signUpMessage = page.getByRole(AriaRole.HEADING, new Page.GetByRoleOptions().setName("Signing up is easy!"));
         this.submitRegistrationButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("REGISTER"));
         this.registrationSuccessfulMessage = page.getByText("Your account was created successfully. You are now logged in.");
-        this.registrationFailedMessage = page.locator("#customer\\.username\\.errors");
+        this.noFirstNameErrorMessage = page.locator("#customer\\.firstName\\.errors");
+        this.noLastNameErrorMessage = page.locator("#customer\\.lastName\\.errors");
+        this.noAddressErrorMessage = page.locator("#customer\\.address\\.street\\.errors");
+        this.noCityErrorMessage = page.locator("#customer\\.address\\.city\\.errors");
+        this.noStateErrorMessage = page.locator("#customer\\.address\\.state\\.errors");
+        this.noZipCodeErrorMessage = page.locator("#customer\\.address\\.zipCode\\.errors");
+        this.noSsnErrorMessage = page.locator("#customer\\.ssn\\.errors");
+        this.noUsernameErrorMessage = page.locator("#customer\\.username\\.errors");
+        this.noPasswordErrorMessage = page.locator("#customer\\.password\\.errors");
+        this.noConfirmPasswordErrorMessage = page.locator("#repeatedPassword\\.errors");
 
     }
 
-    public void navigateToRegistrationPage() {
-        page.navigate(TestConfig.getBaseUrl());
-        registrationPageLink.click();
+    //Expose Locators
+
+    public Locator noFirstNameErrorMessage() {
+        return noFirstNameErrorMessage;
     }
 
-    public boolean isRegistrationMessageDisplayed() {
-        return signUpMessage.isVisible();
+    public Locator noLastNameErrorMessage() {
+        return noLastNameErrorMessage;
     }
 
-    public boolean isSubmitRegistrationButtonDisplayed() {
-        return submitRegistrationButton.isVisible();
+    public Locator noAddressErrorMessage() {
+        return noAddressErrorMessage;
     }
 
-    public boolean isRegistrationSuccessfulDisplayed() {
-        return registrationSuccessfulMessage.isVisible();
+    public Locator noCityErrorMessage() {
+        return noCityErrorMessage;
     }
 
-    public boolean isRegistrationFailedDisplayed() {
-        return registrationFailedMessage.isVisible() &&
-                registrationFailedMessage.allTextContents().contains("This username already exists.");
+    public Locator noStateErrorMessage() {
+        return noStateErrorMessage;
+    }
+
+    public Locator noZipCodeErrorMessage() {
+        return noZipCodeErrorMessage;
+    }
+
+    public Locator noSsnErrorMessage() {
+        return noSsnErrorMessage;
+    }
+
+    public Locator noUsernameErrorMessage() {
+        return noUsernameErrorMessage;
+    }
+
+    public Locator noPasswordErrorMessage() {
+        return noPasswordErrorMessage;
+    }
+
+    public Locator noConfirmOrNoMatchPasswordErrorMessage() {
+        return noConfirmPasswordErrorMessage;
+    }
+
+    public Locator signupMessage() {
+        return signUpMessage;
+    }
+
+    public Locator submitRegistrationButton() {
+        return submitRegistrationButton;
+    }
+
+    public Locator registrationSuccessfulMessage() {
+        return registrationSuccessfulMessage;
+    }
+
+    //Page actions
+    public void fillFirstName(String firstName) {
+        firstNameInput.fill(firstName);
+    }
+
+    public void fillLastName(String lastName) {
+        lastNameInput.fill(lastName);
+    }
+
+    public void fillAddress(String address) {
+        addressInput.fill(address);
+    }
+
+    public void fillCity(String city) {
+        cityInput.fill(city);
+    }
+
+    public void fillState(String state) {
+        stateInput.fill(state);
+    }
+
+    public void fillZipCode(String zipCode) {
+        zipCodeInput.fill(zipCode);
+    }
+
+    public void fillPhoneNumber(String phoneNumber) {
+        phoneNumberInput.fill(phoneNumber);
+    }
+
+    public void fillSsn(String ssn) {
+        ssnInput.fill(ssn);
     }
 
     public void fillUsername(String username) {
         usernameInput.fill(username);
     }
 
-    public void registerValidUser(User user) {
+    public void fillPassword(String password) {
+        passwordInput.fill(password);
+    }
+
+    public void fillConfirmPassword(String confirmPassword) {
+        confirmPasswordInput.fill(confirmPassword);
+    }
+
+    public void fillRegistrationFieldsWithValidUser(User user) {
         String password = user.getPassword();
         firstNameInput.fill(user.getFirstName());
         lastNameInput.fill(user.getLastName());
@@ -87,6 +176,9 @@ public class RegistrationPage {
         usernameInput.fill(user.getUsername());
         passwordInput.fill(password);
         confirmPasswordInput.fill(password);
+    }
+
+    public void clickSubmitRegistrationButton() {
         submitRegistrationButton.click();
     }
 }

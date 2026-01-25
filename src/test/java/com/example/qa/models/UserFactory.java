@@ -2,7 +2,6 @@
 package com.example.qa.models;
 
 import java.security.SecureRandom;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class UserFactory {
 
@@ -70,22 +69,6 @@ public class UserFactory {
                 ssn(),
                 username(),
                 password()
-        );
-    }
-
-    public static User invalidRandomUser() {
-        long n = System.currentTimeMillis() + ThreadLocalRandom.current().nextInt(1000);
-        return new User(
-                "randomFirstName" + n,
-                "randomLastName" + n,
-                "randomAddress" + n,
-                "randomCity" + n,
-                "randomState" + n,
-                "randomZipCode" + n,
-                "randomPhoneNumber" + n,
-                "randomSsn" + n,
-                "randomUniqueUserName" + n,
-                "randomPassword" + n
         );
     }
 }
