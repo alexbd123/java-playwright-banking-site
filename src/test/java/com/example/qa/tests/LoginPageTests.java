@@ -5,20 +5,11 @@ import com.microsoft.playwright.*;
 
 import com.example.qa.pages.LoginPage;
 
-public class LoginPageTests {
+public class LoginPageTests extends BaseTest {
 
     @Test
     void userCanLogIn() {
-        try (Playwright playwright = Playwright.create()) {
-
-            Browser browser = playwright.chromium().launch();
-            Page page = browser.newPage();
-
             LoginPage loginPage = new LoginPage(page);
-
-            loginPage.navigate();
             loginPage.login("abdunn123", "KsZxc!qHmsUJ9");
         }
     }
-
-}
