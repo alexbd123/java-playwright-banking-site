@@ -1,8 +1,8 @@
 package com.example.qa.pages;
 
+import com.example.qa.config.TestConfig;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
-import com.microsoft.playwright.options.AriaRole;
 
 public class NavigationPage {
     private final Page page;
@@ -25,6 +25,10 @@ public class NavigationPage {
         this.updateContactInfoLink = page.locator("//a[contains(text(),'Update Contact Info')]");
         this.requestLoanLink = page.locator("//a[contains(text(),'Request Loan')]");
         this.registrationPageLink = page.locator("//a[contains(text(),'Register')]");
+    }
+
+    public void homePage() {
+        page.navigate(TestConfig.getBaseUrl());
     }
 
     public void registrationPage() {

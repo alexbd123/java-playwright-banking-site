@@ -33,6 +33,7 @@ public class RegistrationPage {
     private final Locator noUsernameErrorMessage;
     private final Locator noPasswordErrorMessage;
     private final Locator noConfirmPasswordErrorMessage;
+    private final Locator logOutLink;
 
 
     public RegistrationPage(Page page) {
@@ -61,6 +62,7 @@ public class RegistrationPage {
         this.noUsernameErrorMessage = page.locator("#customer\\.username\\.errors");
         this.noPasswordErrorMessage = page.locator("#customer\\.password\\.errors");
         this.noConfirmPasswordErrorMessage = page.locator("#repeatedPassword\\.errors");
+        this.logOutLink = page.getByText("Log Out");
 
     }
 
@@ -180,5 +182,9 @@ public class RegistrationPage {
 
     public void clickSubmitRegistrationButton() {
         submitRegistrationButton.click();
+    }
+
+    public void clickLogOutButton() {
+        logOutLink.click();
     }
 }

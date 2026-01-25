@@ -1,23 +1,57 @@
 package com.example.qa.pages;
 
 import com.microsoft.playwright.Page;
-import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.Locator;
 
 public class LoginPage {
+
+    public static final String LOGGED_IN_URL = "https://parabank.parasoft.com/parabank/overview.htm";
+
     private final Locator usernameInput;
     private final Locator passwordInput;
-    private final Locator loginButton;
+    private final Locator logInButton;
+    private final Locator welcomeMessage;
 
     public LoginPage(Page page) {
         this.usernameInput = page.locator("input[name='username']");
         this.passwordInput = page.locator("input[name='password']");
-        this.loginButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Log In"));
+        this.logInButton = page.locator("input[type=submit]");
+        this.welcomeMessage = page.locator(".smallText");
     }
 
-    public void login(String username, String password) {
+    //Expose locators
+    public Locator usernameInput() {
+        return usernameInput;
+    }
+
+    public Locator passwordInput() {
+        return passwordInput;
+    }
+
+    public Locator logInButton() {
+        return logInButton;
+    }
+
+    public Locator welcomeMessage() {
+        return welcomeMessage;
+    }
+
+    //Page actions
+    public void fillUsername(String username) {
+        usernameInput.fill(username);
+    }
+
+    public void fillPassword(String password) {
+        passwordInput.fill(password);
+    }
+
+    public void clickLogIn() {
+        logInButton.click();
+    }
+
+    public void logIn(String username, String password) {
         usernameInput.fill(username);
         passwordInput.fill(password);
-        loginButton.click();
+        logInButton.click();
     }
 }
