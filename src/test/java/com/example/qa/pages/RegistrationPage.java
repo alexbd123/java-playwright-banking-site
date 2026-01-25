@@ -1,6 +1,8 @@
 package com.example.qa.pages;
 
 import com.example.qa.config.TestConfig;
+import com.example.qa.models.User;
+import com.example.qa.models.UserFactory;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.Locator;
@@ -22,6 +24,7 @@ public class RegistrationPage {
     private final Locator registrationPageLink;
     private final Locator signUpMessage;
     private final Locator submitRegistrationButton;
+    private final Locator registrationSuccessfulMessage;
 
     public RegistrationPage(Page page) {
         this.page = page;
@@ -35,10 +38,11 @@ public class RegistrationPage {
         this.ssnInput = page.locator("#customer\\.ssn");
         this.usernameInput = page.locator("#customer\\.username");
         this.passwordInput = page.locator("#customer\\.password");
-        this.confirmPasswordInput = page.getByTestId("repeatedPassword");
+        this.confirmPasswordInput = page.locator("#repeatedPassword");
         this.registrationPageLink = page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Register"));
         this.signUpMessage = page.getByRole(AriaRole.HEADING, new Page.GetByRoleOptions().setName("Signing up is easy!"));
         this.submitRegistrationButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("REGISTER"));
+        this.registrationSuccessfulMessage = page.getByText("Your account was created successfully. You are now logged in.");
 
     }
 
@@ -55,33 +59,27 @@ public class RegistrationPage {
         return submitRegistrationButton.isVisible();
     }
 
+    public boolean isRegistrationSuccessfulDisplayed() {
+        return registrationSuccessfulMessage.isVisible();
+    }
+
     public void fillUsername(String username) {
         usernameInput.fill(username);
     }
 
-    public void registerValidUser(
-            String firstName,
-            String lastName,
-            String address,
-            String city,
-            String state,
-            String zipCode,
-            String phoneNumber,
-            String ssn,
-            String username,
-            String password) {
-        firstNameInput.fill(firstName);
-        lastNameInput.fill(lastName);
-        addressInput.fill(address);
-        cityInput.fill(city);
-        stateInput.fill(state);
-        zipCodeInput.fill(zipCode);
-        phoneNumberInput.fill(phoneNumber);
-        ssnInput.fill(ssn);
-        usernameInput.fill(username);
+    public void registerValidUser(User user) {
+        String password = user.getPassword();
+        firstNameInput.fill(user.getFirstName());
+        lastNameInput.fill(user.getLastName());
+        addressInput.fill(user.getAddress());
+        cityInput.fill(user.getCity());
+        stateInput.fill(user.getState());
+        zipCodeInput.fill(user.getZipCode());
+        phoneNumberInput.fill(user.getPhoneNumber());
+        ssnInput.fill(user.getSsn());
+        usernameInput.fill(user.getUsername());
         passwordInput.fill(password);
         confirmPasswordInput.fill(password);
         submitRegistrationButton.click();
     }
-
 }

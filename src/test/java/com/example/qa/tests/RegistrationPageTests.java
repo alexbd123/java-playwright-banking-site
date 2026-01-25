@@ -1,5 +1,6 @@
 package com.example.qa.tests;
 
+import com.example.qa.models.UserFactory;
 import com.example.qa.pages.RegistrationPage;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,5 +21,11 @@ public class RegistrationPageTests extends BaseTest {
     void userCanNavigateToRegistrationPage() {
         Assertions.assertTrue(registrationPage.isRegistrationMessageDisplayed());
         Assertions.assertTrue(registrationPage.isSubmitRegistrationButtonDisplayed());
+    }
+
+    @Test
+    void userCanSubmitRegistration() {
+        registrationPage.registerValidUser(UserFactory.validRandomUser());
+        Assertions.assertTrue(registrationPage.isRegistrationSuccessfulDisplayed());
     }
 }
