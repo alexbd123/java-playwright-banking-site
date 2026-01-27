@@ -3,8 +3,13 @@ package com.example.qa.pages;
 import com.example.qa.config.TestConfig;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 public class NavigationPage {
+
+    public static final String REGISTRATION_PAGE_URL = "https://parabank.parasoft.com/parabank/register.htm";
+    public static final String OPEN_NEW_ACCOUNT_URL = "https://parabank.parasoft.com/parabank/openaccount.htm";
+
     private final Page page;
     private final Locator openNewAccountLink;
     private final Locator accountsOverviewLink;
@@ -28,7 +33,9 @@ public class NavigationPage {
     }
 
     public void homePage() {
-        page.navigate(TestConfig.getBaseUrl());
+        String url = TestConfig.getBaseUrl();
+        page.navigate(url);
+        assertThat(page).hasURL(url);
     }
 
     public void registrationPage() {
@@ -37,6 +44,7 @@ public class NavigationPage {
 
     public void openNewAccount() {
         openNewAccountLink.click();
+        assertThat(page).hasURL(OPEN_NEW_ACCOUNT_URL);
     }
 
     public void accountsOverview() {
@@ -62,4 +70,5 @@ public class NavigationPage {
     public void requestLoan() {
         requestLoanLink.click();
     }
+
 }

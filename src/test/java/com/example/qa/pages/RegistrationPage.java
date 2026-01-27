@@ -52,8 +52,8 @@ public class RegistrationPage {
         this.usernameInput = page.locator("#customer\\.username");
         this.passwordInput = page.locator("#customer\\.password");
         this.confirmPasswordInput = page.locator("#repeatedPassword");
-        this.signUpMessage = page.getByRole(AriaRole.HEADING, new Page.GetByRoleOptions().setName("Signing up is easy!"));
-        this.submitRegistrationButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("REGISTER"));
+        this.signUpMessage = page.locator("#rightPanel h1.title");
+        this.submitRegistrationButton = page.locator("#customerForm input[type=submit][value='Register']");
         this.registrationSuccessfulMessage = page.getByText("Your account was created successfully. You are now logged in.");
         this.noFirstNameErrorMessage = page.locator("#customer\\.firstName\\.errors");
         this.noLastNameErrorMessage = page.locator("#customer\\.lastName\\.errors");
@@ -125,6 +125,7 @@ public class RegistrationPage {
     }
 
     //Page actions
+
     public void fillFirstName(String firstName) {
         firstNameInput.fill(firstName);
     }
@@ -188,12 +189,14 @@ public class RegistrationPage {
         submitRegistrationButton.click();
     }
 
-    public void registerValidUserAndLogOut(User user) {
+    public void registerValidUserAndLogInOrOut(User user, boolean stayLoggedIn) {
         fillRegistrationFieldsWithValidUser(user);
-        submitRegistrationButton.click();
+        clickSubmitRegistrationButton();
         assertThat(registrationSuccessfulMessage).isVisible();
-        logOutLink.click();
-        assertThat(registrationPageLink).isVisible();
+        if (!stayLoggedIn) {
+            clickLogOutButton();
+            assertThat(registrationPageLink).isVisible();
+        }
     }
 
     public void clickLogOutButton() {

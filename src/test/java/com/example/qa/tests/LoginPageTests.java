@@ -23,7 +23,7 @@ public class LoginPageTests extends BaseTest {
         goTo.registrationPage();
         registrationPage = new RegistrationPage(page);
         User user = UserFactory.validRandomUser();
-        registrationPage.registerValidUserAndLogOut(user);
+        registrationPage.registerValidUserAndLogInOrOut(user, false);
 
         loginPage = new LoginPage(page);
         assertThat(loginPage.usernameInput()).isVisible();
