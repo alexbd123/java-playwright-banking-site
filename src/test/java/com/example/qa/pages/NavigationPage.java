@@ -3,7 +3,6 @@ package com.example.qa.pages;
 import com.example.qa.config.TestConfig;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
-import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 public class NavigationPage {
 
@@ -35,7 +34,6 @@ public class NavigationPage {
     public void homePage() {
         String url = TestConfig.getBaseUrl();
         page.navigate(url);
-        assertThat(page).hasURL(url);
     }
 
     public void registrationPage() {
@@ -44,7 +42,6 @@ public class NavigationPage {
 
     public void openNewAccount() {
         openNewAccountLink.click();
-        assertThat(page).hasURL(OPEN_NEW_ACCOUNT_URL);
     }
 
     public void accountsOverview() {

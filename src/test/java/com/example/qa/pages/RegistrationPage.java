@@ -1,6 +1,8 @@
 package com.example.qa.pages;
 
+import com.example.qa.enums.RegistrationField;
 import com.example.qa.models.User;
+import com.example.qa.models.UserFactory;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.Locator;
@@ -11,6 +13,7 @@ public class RegistrationPage {
 
     public static final String URL = "https://parabank.parasoft.com/parabank/register.htm";
 
+    private final Page page;
     private final Locator firstNameInput;
     private final Locator lastNameInput;
     private final Locator addressInput;
@@ -41,6 +44,7 @@ public class RegistrationPage {
 
     public RegistrationPage(Page page) {
 
+        this.page = page;
         this.firstNameInput = page.locator("#customer\\.firstName");
         this.lastNameInput = page.locator("#customer\\.lastName");
         this.addressInput = page.locator("#customer\\.address\\.street");
@@ -201,5 +205,28 @@ public class RegistrationPage {
 
     public void clickLogOutButton() {
         logOutLink.click();
+    }
+
+    public void fillRegistrationFieldsWithValidUserAndClearField(User user, RegistrationField field) {
+        fillRegistrationFieldsWithValidUser(user);
+        switch (field) {
+            case FIRST_NAME -> firstNameInput.clear();
+            case LAST_NAME -> lastNameInput.clear();
+            case ADDRESS -> addressInput.clear();
+            case CITY -> cityInput.clear();
+            case STATE -> stateInput.clear();
+            case ZIP_CODE -> zipCodeInput.clear();
+            case PHONE -> phoneNumberInput.clear();
+            case SSN -> ssnInput.clear();
+            case USERNAME -> usernameInput.clear();
+            case PASSWORD -> passwordInput.clear();
+            case CONFIRM_PASSWORD -> confirmPasswordInput.clear();
+        }
+    }
+
+    public void assertErrorOnRegistrationPage(Locator errorLocator, String expectedErrorMessage) {
+        assertThat(errorLocator).isVisible();
+        assertThat(errorLocator).hasText(expectedErrorMessage);
+        assertThat(page).hasURL(NavigationPage.REGISTRATION_PAGE_URL);
     }
 }

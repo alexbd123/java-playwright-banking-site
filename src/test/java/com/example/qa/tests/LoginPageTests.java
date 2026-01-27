@@ -5,10 +5,7 @@ import com.example.qa.models.UserFactory;
 import com.example.qa.pages.NavigationPage;
 import com.example.qa.pages.RegistrationPage;
 import org.junit.jupiter.api.Test;
-import com.microsoft.playwright.*;
-
 import com.example.qa.pages.LoginPage;
-
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 public class LoginPageTests extends BaseTest {

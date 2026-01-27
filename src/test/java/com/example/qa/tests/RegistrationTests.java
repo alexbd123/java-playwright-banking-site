@@ -1,5 +1,6 @@
 package com.example.qa.tests;
 
+import com.example.qa.enums.RegistrationField;
 import com.example.qa.models.User;
 import com.example.qa.models.UserFactory;
 import com.example.qa.pages.NavigationPage;
@@ -10,8 +11,8 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 
 public class RegistrationTests extends BaseTest {
 
-    public RegistrationPage registrationPage;
-    public NavigationPage goTo;
+    private RegistrationPage registrationPage;
+    private NavigationPage goTo;
 
     @BeforeEach
     void openRegistration() {
@@ -43,112 +44,113 @@ public class RegistrationTests extends BaseTest {
 
     @Test
     void userCannotRegisterWithoutFirstName() {
-        registrationPage.fillRegistrationFieldsWithValidUser(UserFactory.validRandomUser());
-        registrationPage.fillFirstName("");
+        registrationPage.fillRegistrationFieldsWithValidUserAndClearField(
+                UserFactory.validRandomUser(),
+                RegistrationField.FIRST_NAME
+        );
         registrationPage.clickSubmitRegistrationButton();
-        var noFirstNameErrorMessage = registrationPage.noFirstNameErrorMessage();
-        assertThat(noFirstNameErrorMessage).isVisible();
-        assertThat(noFirstNameErrorMessage).hasText("First name is required.");
-        assertThat(page).hasURL(NavigationPage.REGISTRATION_PAGE_URL);
+        registrationPage.assertErrorOnRegistrationPage(
+            registrationPage.noFirstNameErrorMessage(), "First name is required.");
     }
 
     @Test
     void userCannotRegisterWithoutLastName() {
-        registrationPage.fillRegistrationFieldsWithValidUser(UserFactory.validRandomUser());
-        registrationPage.fillLastName("");
+        registrationPage.fillRegistrationFieldsWithValidUserAndClearField(
+                UserFactory.validRandomUser(),
+                RegistrationField.LAST_NAME
+        );
         registrationPage.clickSubmitRegistrationButton();
-        var noLastNameErrorMessage = registrationPage.noLastNameErrorMessage();
-        assertThat(noLastNameErrorMessage).isVisible();
-        assertThat(noLastNameErrorMessage).hasText("Last name is required.");
-        assertThat(page).hasURL(NavigationPage.REGISTRATION_PAGE_URL);
+        registrationPage.assertErrorOnRegistrationPage(
+            registrationPage.noLastNameErrorMessage(), "Last name is required.");
     }
 
     @Test
     void userCannotRegisterWithoutAddress() {
-        registrationPage.fillRegistrationFieldsWithValidUser(UserFactory.validRandomUser());
-        registrationPage.fillAddress("");
+        registrationPage.fillRegistrationFieldsWithValidUserAndClearField(
+                UserFactory.validRandomUser(),
+                RegistrationField.ADDRESS
+        );
         registrationPage.clickSubmitRegistrationButton();
-        var noAddressErrorMessage = registrationPage.noAddressErrorMessage();
-        assertThat(noAddressErrorMessage).isVisible();
-        assertThat(noAddressErrorMessage).hasText("Address is required.");
-        assertThat(page).hasURL(NavigationPage.REGISTRATION_PAGE_URL);
+        registrationPage.assertErrorOnRegistrationPage(
+            registrationPage.noAddressErrorMessage(), "Address is required.");
     }
 
     @Test
     void userCannotRegisterWithoutCity() {
-        registrationPage.fillRegistrationFieldsWithValidUser(UserFactory.validRandomUser());
-        registrationPage.fillCity("");
+        registrationPage.fillRegistrationFieldsWithValidUserAndClearField(
+                UserFactory.validRandomUser(),
+                RegistrationField.CITY
+        );
         registrationPage.clickSubmitRegistrationButton();
-        var noCityErrorMessage = registrationPage.noCityErrorMessage();
-        assertThat(noCityErrorMessage).isVisible();
-        assertThat(noCityErrorMessage).hasText("City is required.");
-        assertThat(page).hasURL(NavigationPage.REGISTRATION_PAGE_URL);
+        registrationPage.assertErrorOnRegistrationPage(
+            registrationPage.noCityErrorMessage(), "City is required.");
     }
 
     @Test
     void userCannotRegisterWithoutState() {
-        registrationPage.fillRegistrationFieldsWithValidUser(UserFactory.validRandomUser());
-        registrationPage.fillState("");
+        registrationPage.fillRegistrationFieldsWithValidUserAndClearField(
+                UserFactory.validRandomUser(),
+                RegistrationField.STATE
+        );
         registrationPage.clickSubmitRegistrationButton();
         var noStateErrorMessage = registrationPage.noStateErrorMessage();
-        assertThat(noStateErrorMessage).isVisible();
-        assertThat(noStateErrorMessage).hasText("State is required.");
-        assertThat(page).hasURL(NavigationPage.REGISTRATION_PAGE_URL);
+        registrationPage.assertErrorOnRegistrationPage(
+            noStateErrorMessage, "State is required.");
     }
 
     @Test
     void userCannotRegisterWithoutZipCode() {
-        registrationPage.fillRegistrationFieldsWithValidUser(UserFactory.validRandomUser());
-        registrationPage.fillZipCode("");
+        registrationPage.fillRegistrationFieldsWithValidUserAndClearField(
+                UserFactory.validRandomUser(),
+                RegistrationField.ZIP_CODE
+        );
         registrationPage.clickSubmitRegistrationButton();
-        var noZipCodeErrorMessage = registrationPage.noZipCodeErrorMessage();
-        assertThat(noZipCodeErrorMessage).isVisible();
-        assertThat(noZipCodeErrorMessage).hasText("Zip Code is required.");
-        assertThat(page).hasURL(NavigationPage.REGISTRATION_PAGE_URL);
+        registrationPage.assertErrorOnRegistrationPage(
+            registrationPage.noZipCodeErrorMessage(), "Zip Code is required.");
     }
 
     @Test
     void userCannotRegisterWithoutSsn() {
-        registrationPage.fillRegistrationFieldsWithValidUser(UserFactory.validRandomUser());
-        registrationPage.fillSsn("");
+        registrationPage.fillRegistrationFieldsWithValidUserAndClearField(
+                UserFactory.validRandomUser(),
+                RegistrationField.SSN
+        );
         registrationPage.clickSubmitRegistrationButton();
-        var noSsnErrorMessage = registrationPage.noSsnErrorMessage();
-        assertThat(noSsnErrorMessage).isVisible();
-        assertThat(noSsnErrorMessage).hasText("Social Security Number is required.");
-        assertThat(page).hasURL(NavigationPage.REGISTRATION_PAGE_URL);
+        registrationPage.assertErrorOnRegistrationPage(
+            registrationPage.noSsnErrorMessage(), "Social Security Number is required.");
     }
 
     @Test
     void userCannotRegisterWithoutUsername() {
-        registrationPage.fillRegistrationFieldsWithValidUser(UserFactory.validRandomUser());
-        registrationPage.fillUsername("");
+        registrationPage.fillRegistrationFieldsWithValidUserAndClearField(
+                UserFactory.validRandomUser(),
+                RegistrationField.USERNAME
+        );
         registrationPage.clickSubmitRegistrationButton();
-        var noUsernameErrorMessage = registrationPage.noUsernameErrorMessage();
-        assertThat(noUsernameErrorMessage).isVisible();
-        assertThat(noUsernameErrorMessage).hasText("Username is required.");
-        assertThat(page).hasURL(NavigationPage.REGISTRATION_PAGE_URL);
+        registrationPage.assertErrorOnRegistrationPage(
+            registrationPage.noUsernameErrorMessage(), "Username is required.");
     }
 
     @Test
     void userCannotRegisterWithoutPassword() {
-        registrationPage.fillRegistrationFieldsWithValidUser(UserFactory.validRandomUser());
-        registrationPage.fillPassword("");
+        registrationPage.fillRegistrationFieldsWithValidUserAndClearField(
+                UserFactory.validRandomUser(),
+                RegistrationField.PASSWORD
+        );
         registrationPage.clickSubmitRegistrationButton();
-        var noPasswordErrorMessage = registrationPage.noPasswordErrorMessage();
-        assertThat(noPasswordErrorMessage).isVisible();
-        assertThat(noPasswordErrorMessage).hasText("Password is required.");
-        assertThat(page).hasURL(NavigationPage.REGISTRATION_PAGE_URL);
+        registrationPage.assertErrorOnRegistrationPage(
+            registrationPage.noPasswordErrorMessage(), "Password is required.");
     }
 
     @Test
     void userCannotRegisterWithoutConfirmingPassword() {
-        registrationPage.fillRegistrationFieldsWithValidUser(UserFactory.validRandomUser());
-        registrationPage.fillConfirmPassword("");
+        registrationPage.fillRegistrationFieldsWithValidUserAndClearField(
+                UserFactory.validRandomUser(),
+                RegistrationField.CONFIRM_PASSWORD
+        );
         registrationPage.clickSubmitRegistrationButton();
-        var noConfirmOrNoMatchPasswordErrorMessage = registrationPage.noConfirmOrNoMatchPasswordErrorMessage();
-        assertThat(noConfirmOrNoMatchPasswordErrorMessage).isVisible();
-        assertThat(noConfirmOrNoMatchPasswordErrorMessage).hasText("Password confirmation is required.");
-        assertThat(page).hasURL(NavigationPage.REGISTRATION_PAGE_URL);
+        registrationPage.assertErrorOnRegistrationPage(
+            registrationPage.noConfirmOrNoMatchPasswordErrorMessage(), "Password confirmation is required.");
     }
 
     @Test
