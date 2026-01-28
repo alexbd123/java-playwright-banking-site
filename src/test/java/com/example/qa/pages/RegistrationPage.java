@@ -2,16 +2,12 @@ package com.example.qa.pages;
 
 import com.example.qa.enums.RegistrationField;
 import com.example.qa.models.User;
-import com.example.qa.models.UserFactory;
 import com.microsoft.playwright.Page;
-import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.Locator;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 public class RegistrationPage {
-
-    public static final String URL = "https://parabank.parasoft.com/parabank/register.htm";
 
     private final Page page;
     private final Locator firstNameInput;
@@ -228,5 +224,41 @@ public class RegistrationPage {
         assertThat(errorLocator).isVisible();
         assertThat(errorLocator).hasText(expectedErrorMessage);
         assertThat(page).hasURL(NavigationPage.REGISTRATION_PAGE_URL);
+    }
+
+    public Locator getErrorMessageLocator(RegistrationField field){
+        switch (field) {
+            case FIRST_NAME -> {
+                return noFirstNameErrorMessage();
+            }
+            case LAST_NAME -> {
+                return noLastNameErrorMessage();
+            }
+            case ADDRESS -> {
+                return noAddressErrorMessage();
+            }
+            case CITY -> {
+                return noCityErrorMessage();
+            }
+            case STATE -> {
+                return noStateErrorMessage();
+            }
+            case ZIP_CODE -> {
+                return noZipCodeErrorMessage();
+            }
+            case SSN -> {
+                return noSsnErrorMessage();
+            }
+            case USERNAME -> {
+                return noUsernameErrorMessage();
+            }
+            case PASSWORD -> {
+                return noPasswordErrorMessage();
+            }
+            case CONFIRM_PASSWORD -> {
+                return noConfirmOrNoMatchPasswordErrorMessage();
+            }
+        }
+        return null;
     }
 }

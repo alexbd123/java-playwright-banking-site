@@ -1,6 +1,7 @@
 package com.example.qa.tests;
 
 import com.example.qa.config.TestConfig;
+import com.example.qa.pages.NavigationPage;
 import com.microsoft.playwright.*;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -29,10 +30,12 @@ public abstract class BaseTest {
     }
 
     @BeforeEach
-    void createContextAndPage() {
+    void createContextAndPageAndGoToRegistration() {
         context = browser.newContext();
         page = context.newPage();
         page.navigate(TestConfig.getBaseUrl());
+        NavigationPage goTo = new NavigationPage(page);
+        goTo.registrationPage();
     }
 
     @AfterEach
