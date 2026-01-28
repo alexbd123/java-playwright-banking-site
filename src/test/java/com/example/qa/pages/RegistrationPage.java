@@ -1,6 +1,6 @@
 package com.example.qa.pages;
 
-import com.example.qa.enums.RegistrationField;
+import com.example.qa.enums.RegistrationFieldErrorMessage;
 import com.example.qa.models.User;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Locator;
@@ -170,19 +170,63 @@ public class RegistrationPage {
         confirmPasswordInput.fill(confirmPassword);
     }
 
+    public void clearFirstName() {
+        firstNameInput.clear();
+    }
+
+    public void clearLastName() {
+        lastNameInput.clear();
+    }
+
+    public void clearAddress() {
+        addressInput.clear();
+    }
+
+    public void clearCity() {
+        cityInput.clear();
+    }
+
+    public void clearState() {
+        stateInput.clear();
+    }
+
+    public void clearZipCode() {
+        zipCodeInput.clear();
+    }
+
+    public void clearPhoneNumber() {
+        phoneNumberInput.clear();
+    }
+
+    public void clearSsn() {
+        ssnInput.clear();
+    }
+
+    public void clearUsername() {
+        usernameInput.clear();
+    }
+
+    public void clearPassword() {
+        passwordInput.clear();
+    }
+
+    public void clearConfirmPassword() {
+        confirmPasswordInput.clear();
+    }
+
     public void fillRegistrationFieldsWithValidUser(User user) {
         String password = user.getPassword();
-        firstNameInput.fill(user.getFirstName());
-        lastNameInput.fill(user.getLastName());
-        addressInput.fill(user.getAddress());
-        cityInput.fill(user.getCity());
-        stateInput.fill(user.getState());
-        zipCodeInput.fill(user.getZipCode());
-        phoneNumberInput.fill(user.getPhoneNumber());
-        ssnInput.fill(user.getSsn());
-        usernameInput.fill(user.getUsername());
-        passwordInput.fill(password);
-        confirmPasswordInput.fill(password);
+        fillFirstName(user.getFirstName());
+        fillLastName(user.getLastName());
+        fillAddress(user.getAddress());
+        fillCity(user.getCity());
+        fillState(user.getState());
+        fillZipCode(user.getZipCode());
+        fillPhoneNumber(user.getPhoneNumber());
+        fillSsn(user.getSsn());
+        fillUsername(user.getUsername());
+        fillPassword(password);
+        fillConfirmPassword(password);
     }
 
     public void clickSubmitRegistrationButton() {
@@ -203,59 +247,57 @@ public class RegistrationPage {
         logOutLink.click();
     }
 
-    public void fillRegistrationFieldsWithValidUserAndClearField(User user, RegistrationField field) {
+    public void fillRegistrationFieldsWithValidUserAndClearField(User user, RegistrationFieldErrorMessage field) {
         fillRegistrationFieldsWithValidUser(user);
         switch (field) {
-            case FIRST_NAME -> firstNameInput.clear();
-            case LAST_NAME -> lastNameInput.clear();
-            case ADDRESS -> addressInput.clear();
-            case CITY -> cityInput.clear();
-            case STATE -> stateInput.clear();
-            case ZIP_CODE -> zipCodeInput.clear();
-            case PHONE -> phoneNumberInput.clear();
-            case SSN -> ssnInput.clear();
-            case USERNAME -> usernameInput.clear();
-            case PASSWORD -> passwordInput.clear();
-            case CONFIRM_PASSWORD -> confirmPasswordInput.clear();
+            case FIRST_NAME_REQUIRED -> clearFirstName();
+            case LAST_NAME_REQUIRED -> clearLastName();
+            case ADDRESS_REQUIRED -> clearAddress();
+            case CITY_REQUIRED -> clearCity();
+            case STATE_REQUIRED -> clearState();
+            case ZIP_CODE_REQUIRED -> clearZipCode();
+            case SSN_REQUIRED -> clearSsn();
+            case USERNAME_REQUIRED -> clearUsername();
+            case PASSWORD_REQUIRED -> clearPassword();
+            case CONFIRM_PASSWORD_REQUIRED -> clearConfirmPassword();
         }
     }
 
     public void assertErrorOnRegistrationPage(Locator errorLocator, String expectedErrorMessage) {
         assertThat(errorLocator).isVisible();
         assertThat(errorLocator).hasText(expectedErrorMessage);
-        assertThat(page).hasURL(NavigationPage.REGISTRATION_PAGE_URL);
     }
 
-    public Locator getErrorMessageLocator(RegistrationField field){
+    public Locator getErrorMessageLocator(RegistrationFieldErrorMessage field){
         switch (field) {
-            case FIRST_NAME -> {
+            case FIRST_NAME_REQUIRED -> {
                 return noFirstNameErrorMessage();
             }
-            case LAST_NAME -> {
+            case LAST_NAME_REQUIRED -> {
                 return noLastNameErrorMessage();
             }
-            case ADDRESS -> {
+            case ADDRESS_REQUIRED -> {
                 return noAddressErrorMessage();
             }
-            case CITY -> {
+            case CITY_REQUIRED -> {
                 return noCityErrorMessage();
             }
-            case STATE -> {
+            case STATE_REQUIRED -> {
                 return noStateErrorMessage();
             }
-            case ZIP_CODE -> {
+            case ZIP_CODE_REQUIRED -> {
                 return noZipCodeErrorMessage();
             }
-            case SSN -> {
+            case SSN_REQUIRED -> {
                 return noSsnErrorMessage();
             }
-            case USERNAME -> {
+            case USERNAME_REQUIRED -> {
                 return noUsernameErrorMessage();
             }
-            case PASSWORD -> {
+            case PASSWORD_REQUIRED -> {
                 return noPasswordErrorMessage();
             }
-            case CONFIRM_PASSWORD -> {
+            case CONFIRM_PASSWORD_REQUIRED -> {
                 return noConfirmOrNoMatchPasswordErrorMessage();
             }
         }

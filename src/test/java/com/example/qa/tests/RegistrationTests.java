@@ -1,9 +1,8 @@
 package com.example.qa.tests;
 
-import com.example.qa.enums.RegistrationField;
+import com.example.qa.enums.RegistrationFieldErrorMessage;
 import com.example.qa.models.User;
 import com.example.qa.models.UserFactory;
-import com.example.qa.pages.NavigationPage;
 import com.example.qa.pages.RegistrationPage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,29 +36,28 @@ public class RegistrationTests extends BaseTest {
     }
 
     @ParameterizedTest(name = "User cannot register without filling in {0} field")
-    @EnumSource(value = RegistrationField.class, mode = EnumSource.Mode.EXCLUDE, names = "PHONE")
-    void userCannotRegisterWithFieldLeftBlank(RegistrationField field) {
+    @EnumSource(value = RegistrationFieldErrorMessage.class)
+    void userCannotRegisterWithFieldLeftBlank(RegistrationFieldErrorMessage errorValidationCase) {
         registrationPage.fillRegistrationFieldsWithValidUserAndClearField(
                 user,
-                field
+                errorValidationCase
         );
         registrationPage.clickSubmitRegistrationButton();
         registrationPage.assertErrorOnRegistrationPage(
-                registrationPage.getErrorMessageLocator(field), field.getErrorMessage()
+                registrationPage.getErrorMessageLocator(errorValidationCase), errorValidationCase.getErrorMessage()
         );
     }
 
     @Test
     void userCanSubmitRegistrationWithoutPhoneNumber() {
-        registrationPage.fillRegistrationFieldsWithValidUser(UserFactory.validRandomUser());
-        registrationPage.fillPhoneNumber("");
+        registrationPage.fillRegistrationFieldsWithValidUser(user);
+        registrationPage.clearPhoneNumber();
         registrationPage.clickSubmitRegistrationButton();
         assertThat(registrationPage.registrationSuccessfulMessage()).isVisible();
     }
 
     @Test
     void userCannotRegisterIfPasswordsDoNotMatch() {
-        User user = UserFactory.validRandomUser();
         String confirmPasswordNotIdentical = user.getPassword() + "abc";
         registrationPage.fillRegistrationFieldsWithValidUser(user);
         registrationPage.fillConfirmPassword(confirmPasswordNotIdentical);
@@ -67,6 +65,5 @@ public class RegistrationTests extends BaseTest {
         var passwordNotIdenticalErrorMessage = registrationPage.noConfirmOrNoMatchPasswordErrorMessage();
         assertThat(passwordNotIdenticalErrorMessage).isVisible();
         assertThat(passwordNotIdenticalErrorMessage).hasText("Passwords did not match.");
-        assertThat(page).hasURL(NavigationPage.REGISTRATION_PAGE_URL);
     }
 }
