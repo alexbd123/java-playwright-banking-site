@@ -10,7 +10,8 @@ public enum RegistrationFieldErrorMessage {
     SSN_REQUIRED("SSN", "Social Security Number is required."),
     USERNAME_REQUIRED("Username", "Username is required."),
     PASSWORD_REQUIRED("Password", "Password is required."),
-    CONFIRM_PASSWORD_REQUIRED("Confirm password", "Password confirmation is required.");
+    CONFIRM_PASSWORD_REQUIRED("Confirm password", "Password confirmation is required."),
+    PASSWORD_MISMATCH("Confirm password", "Passwords did not match.");
     
     public final String field;
     public final String errorMessage;

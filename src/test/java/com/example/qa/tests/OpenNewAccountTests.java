@@ -34,9 +34,7 @@ public class OpenNewAccountTests extends BaseTest {
     @ParameterizedTest(name = "User can open new {0} account and see it in overview")
     @EnumSource(AccountTypes.class)
     void userCanOpenNewAccountAndAccountAppearsInOverview(AccountTypes accountType) {
-        openNewAccountPage.selectAccountTypeFromDropdown(accountType);
-        assertThat(openNewAccountPage.selectedAccount()).hasText(accountType.label);
-        openNewAccountPage.clickOpenNewAccountButton();
+        openNewAccountPage.selectAccountTypeAndOpenNewAccount(accountType);
         assertThat(openNewAccountPage.successfullyOpenedAccountMessage()).isVisible();
         assertThat(openNewAccountPage.newAccountIdLink()).isEnabled();
         String newAccountNumber = openNewAccountPage.getAccountNumber();

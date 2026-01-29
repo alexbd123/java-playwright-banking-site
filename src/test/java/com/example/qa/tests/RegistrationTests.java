@@ -36,7 +36,7 @@ public class RegistrationTests extends BaseTest {
     }
 
     @ParameterizedTest(name = "User cannot register without filling in {0} field")
-    @EnumSource(value = RegistrationFieldErrorMessage.class)
+    @EnumSource(value = RegistrationFieldErrorMessage.class, mode = EnumSource.Mode.EXCLUDE, names = "PASSWORD_MISMATCH")
     void userCannotRegisterWithFieldLeftBlank(RegistrationFieldErrorMessage errorValidationCase) {
         registrationPage.fillRegistrationFieldsWithValidUserAndClearField(
                 user,
@@ -44,7 +44,7 @@ public class RegistrationTests extends BaseTest {
         );
         registrationPage.clickSubmitRegistrationButton();
         registrationPage.assertErrorOnRegistrationPage(
-                registrationPage.getErrorMessageLocator(errorValidationCase), errorValidationCase.getErrorMessage()
+                registrationPage.getErrorMessageLocator(errorValidationCase), errorValidationCase.errorMessage
         );
     }
 
@@ -64,6 +64,6 @@ public class RegistrationTests extends BaseTest {
         registrationPage.clickSubmitRegistrationButton();
         var passwordNotIdenticalErrorMessage = registrationPage.noConfirmOrNoMatchPasswordErrorMessage();
         assertThat(passwordNotIdenticalErrorMessage).isVisible();
-        assertThat(passwordNotIdenticalErrorMessage).hasText("Passwords did not match.");
+        assertThat(passwordNotIdenticalErrorMessage).hasText(RegistrationFieldErrorMessage.PASSWORD_MISMATCH.errorMessage);
     }
 }

@@ -12,7 +12,7 @@ public enum AccountTypes {
         this.value = value;
         this.label = label;
     }
-    public String getValue() {return value;}
+    public String getValue() { return value; }
     public String getLabel() { return label; }
 }
 
