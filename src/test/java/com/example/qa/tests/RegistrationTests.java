@@ -3,14 +3,12 @@ package com.example.qa.tests;
 import com.example.qa.enums.RegistrationFieldErrorMessage;
 import com.example.qa.models.UserFactory;
 import com.example.qa.tests.base_tests.BaseTest;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
-@Tag("Registration")
 public class RegistrationTests extends BaseTest {
 
     @Test
@@ -55,6 +53,6 @@ public class RegistrationTests extends BaseTest {
         registrationPage.clickSubmitRegistrationButton();
         var passwordNotIdenticalErrorMessage = registrationPage.noConfirmOrNoMatchPasswordErrorMessage();
         assertThat(passwordNotIdenticalErrorMessage).isVisible();
-        assertThat(passwordNotIdenticalErrorMessage).hasText(RegistrationFieldErrorMessage.PASSWORD_MISMATCH.errorMessage);
+        assertThat(passwordNotIdenticalErrorMessage).hasText(RegistrationFieldErrorMessage.PASSWORD_MISMATCH.getErrorMessage());
     }
 }

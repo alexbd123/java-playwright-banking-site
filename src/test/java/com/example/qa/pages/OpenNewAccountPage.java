@@ -73,13 +73,13 @@ public class OpenNewAccountPage {
 
     public String openNewAccountAndReturnAccountNumber(AccountTypes accountTypes) {
         selectAccountTypeFromDropdown(accountTypes);
-        assertThat(selectedAccount()).hasText(accountTypes.label);
+        assertThat(selectedAccount()).hasText(accountTypes.getLabel());
         clickOpenNewAccountButton();
         return getAccountNumber();
     }
 
     public void selectAccountTypeFromDropdown(AccountTypes accountType) {
-        accountTypeDropdown.selectOption(accountType.value);
+        accountTypeDropdown.selectOption(accountType.getValue());
     }
 
     public void selectExistingAccountNumberFromDropdown(String accountNumber) {
