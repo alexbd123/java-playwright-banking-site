@@ -71,10 +71,11 @@ public class OpenNewAccountPage {
         }
     }
 
-    public void selectAccountTypeAndOpenNewAccount(AccountTypes accountTypes) {
+    public String openNewAccountAndReturnAccountNumber(AccountTypes accountTypes) {
         selectAccountTypeFromDropdown(accountTypes);
         assertThat(selectedAccount()).hasText(accountTypes.label);
         clickOpenNewAccountButton();
+        return getAccountNumber();
     }
 
     public void selectAccountTypeFromDropdown(AccountTypes accountType) {

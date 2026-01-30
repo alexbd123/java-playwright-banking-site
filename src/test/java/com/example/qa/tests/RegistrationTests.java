@@ -1,26 +1,17 @@
 package com.example.qa.tests;
 
 import com.example.qa.enums.RegistrationFieldErrorMessage;
-import com.example.qa.models.User;
 import com.example.qa.models.UserFactory;
-import com.example.qa.pages.RegistrationPage;
-import org.junit.jupiter.api.BeforeEach;
+import com.example.qa.tests.base_tests.BaseTest;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
+@Tag("Registration")
 public class RegistrationTests extends BaseTest {
-
-    private RegistrationPage registrationPage;
-    private User user;
-
-    @BeforeEach
-    void openRegistration() {
-        registrationPage = new RegistrationPage(page);
-        user = UserFactory.validRandomUser();
-    }
 
     @Test
     void userCanNavigateToRegistrationPage() {

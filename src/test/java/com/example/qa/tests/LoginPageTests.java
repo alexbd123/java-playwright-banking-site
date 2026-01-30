@@ -1,33 +1,22 @@
 package com.example.qa.tests;
 
-import com.example.qa.models.User;
-import com.example.qa.models.UserFactory;
 import com.example.qa.pages.*;
+import com.example.qa.tests.base_tests.AuthenticatedBaseTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
-public class LoginPageTests extends BaseTest {
-
-    private LoginPage loginPage;
-    private RegistrationPage registrationPage;
-    private User user;
+public class LoginPageTests extends AuthenticatedBaseTest {
 
     @BeforeEach
-    public void setUp() {
-        registrationPage = new RegistrationPage(page);
-        user = UserFactory.validRandomUser();
-        registrationPage.registerValidUserAndLogInOrOut(user, false);
-        loginPage = new LoginPage(page);
+    void setUpTestsByLoggingOut() {
+        registrationPage.clickLogOutButton();
     }
 
     @Test
     void registeredValidUserCanLogIn() {
-        loginPage.fillUsername(user.getUsername());
-        loginPage.fillPassword(user.getPassword());
-        loginPage.clickLogIn();
-
+        loginPage.logIn(user);
         var welcomeMessage = loginPage.welcomeMessage();
         assertThat(welcomeMessage).isVisible();
         assertThat(welcomeMessage).hasText("Welcome " + user.getFirstName() + " " + user.getLastName());

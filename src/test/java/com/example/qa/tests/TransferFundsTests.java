@@ -1,5 +1,6 @@
 package com.example.qa.tests;
 
+import com.example.qa.tests.base_tests.AuthenticatedBaseTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -7,33 +8,19 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 
 
 import com.example.qa.enums.AccountTypes;
-import com.example.qa.models.User;
-import com.example.qa.models.UserFactory;
-import com.example.qa.pages.NavigationPage;
-import com.example.qa.pages.OpenNewAccountPage;
-import com.example.qa.pages.RegistrationPage;
 import com.example.qa.pages.TransferFundsPage;
 
-public class TransferFundsTests extends BaseTest {
+public class TransferFundsTests extends AuthenticatedBaseTest {
 
-    private NavigationPage goTo;
-    private OpenNewAccountPage openNewAccountPage;
     private String newCheckingAccount;
     private String newSavingsAccount;
 
     @BeforeEach
-    public void setUp() {
-        RegistrationPage registrationPage = new RegistrationPage(page);
-        openNewAccountPage = new OpenNewAccountPage(page);
-        goTo = new NavigationPage(page);
-        User user = UserFactory.validRandomUser();
-        registrationPage.registerValidUserAndLogInOrOut(user, true);
+    void setUpNewAccountsForTests() {
         goTo.openNewAccount();
-        openNewAccountPage.selectAccountTypeAndOpenNewAccount(AccountTypes.CHECKING);
-        newCheckingAccount = openNewAccountPage.getAccountNumber();
+        newCheckingAccount = openNewAccountPage.openNewAccountAndReturnAccountNumber(AccountTypes.CHECKING);
         goTo.openNewAccount();
-        openNewAccountPage.selectAccountTypeAndOpenNewAccount(AccountTypes.SAVINGS);
-        newSavingsAccount = openNewAccountPage.getAccountNumber();
+        newSavingsAccount = openNewAccountPage.openNewAccountAndReturnAccountNumber(AccountTypes.SAVINGS);
         goTo.transferFunds();
     }
 
