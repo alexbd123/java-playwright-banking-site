@@ -5,10 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-
-
 import com.example.qa.enums.AccountTypes;
-import com.example.qa.pages.TransferFundsPage;
 
 public class TransferFundsTests extends AuthenticatedBaseTest {
 
@@ -24,14 +21,23 @@ public class TransferFundsTests extends AuthenticatedBaseTest {
         goTo.transferFunds();
     }
 
-    @ParameterizedTest(name = "User can send 5$ from original account into new {0} account")
+    @ParameterizedTest(name = "User can transfer funds from original account into new {0} account")
     @EnumSource(AccountTypes.class)
-    void userCanSend5DollarsToNewAccount(AccountTypes accountType) {
-        TransferFundsPage transferFundsPage = new TransferFundsPage(page);
-        transferFundsPage.enterAmountIntoAmountInput("5");
-        transferFundsPage.selectAccountToSendTo(accountType == AccountTypes.CHECKING
-             ? newCheckingAccount : newSavingsAccount);
-        transferFundsPage.clickTransferButton();
+    void userCanTransferFundsToNewAccount(AccountTypes accountType) { 
+        transferFundsPage.transferFunds(
+            transferFundsPage.getOriginalAccountNumber(),
+            accountType == AccountTypes.CHECKING ? newCheckingAccount : newSavingsAccount,
+              5);
+        assertThat(transferFundsPage.getSuccessMessage()).isVisible();     
+    }  
+
+    @ParameterizedTest(name = "User can transfer funds from new {0} account into original account")
+    @EnumSource(AccountTypes.class)
+    void userCanTransferFundsToOriginalAccount(AccountTypes accountType) { 
+        transferFundsPage.transferFunds(accountType == AccountTypes.CHECKING
+             ? newCheckingAccount : newSavingsAccount,
+             transferFundsPage.getOriginalAccountNumber(),
+              5);
         assertThat(transferFundsPage.getSuccessMessage()).isVisible();     
     }  
 }

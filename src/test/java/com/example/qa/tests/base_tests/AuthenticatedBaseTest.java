@@ -22,6 +22,7 @@ public abstract class AuthenticatedBaseTest {
     protected RegistrationPage registrationPage;
     protected AccountsOverviewPage accountsOverviewPage;
     protected LoginPage loginPage;
+    protected TransferFundsPage transferFundsPage;
 
     @BeforeAll
     static void globalSetUp() {
@@ -56,6 +57,7 @@ public abstract class AuthenticatedBaseTest {
         openNewAccountPage = new OpenNewAccountPage(page);
         accountsOverviewPage = new AccountsOverviewPage(page);
         loginPage = new LoginPage(page);
+        transferFundsPage = new TransferFundsPage(page);
     }
 
     protected void createAndRegisterUser() {
