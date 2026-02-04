@@ -6,9 +6,6 @@ import com.microsoft.playwright.Page;
 
 public class NavigationPage {
 
-    public static final String REGISTRATION_PAGE_URL = "https://parabank.parasoft.com/parabank/register.htm";
-    public static final String OPEN_NEW_ACCOUNT_URL = "https://parabank.parasoft.com/parabank/openaccount.htm";
-
     private final Page page;
     private final Locator openNewAccountLink;
     private final Locator accountsOverviewLink;

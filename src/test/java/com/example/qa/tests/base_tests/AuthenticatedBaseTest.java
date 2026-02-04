@@ -27,8 +27,7 @@ public abstract class AuthenticatedBaseTest {
     @BeforeAll
     static void globalSetUp() {
         playwright = Playwright.create();
-        boolean headless = Boolean.parseBoolean(System.getProperty("HEADLESS",
-                System.getenv().getOrDefault("HEADLESS", "true")));
+        boolean headless = TestConfig.getHeadless();
         browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(headless));
     }
 
