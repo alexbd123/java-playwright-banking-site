@@ -1,5 +1,6 @@
 package com.example.qa.tests.base_tests;
 
+import com.example.qa.api.ApiHelper;
 import com.example.qa.api.clients.CustomerAPI;
 import com.example.qa.api.dtos.CustomerDto;
 import com.example.qa.config.TestConfig;
@@ -24,6 +25,7 @@ public abstract class AuthenticatedBaseTest {
     protected Page page;
     protected static User user;
     protected static Integer customerId;
+    protected static Integer originalAccountId;
     protected OpenNewAccountPage openNewAccountPage;
     protected NavigationPage goTo;
     protected RegistrationPage registrationPage;
@@ -40,6 +42,7 @@ public abstract class AuthenticatedBaseTest {
         createAPIRequestContext();
         createAndRegisterUserInTempContext();
         fetchAndCacheCustomerIdOnce();
+        fetchAndCacheOriginalAccountIdOnce();
     }
 
     @AfterAll
@@ -75,7 +78,7 @@ public abstract class AuthenticatedBaseTest {
         tempPage.navigate(TestConfig.getBaseUrl());
         tempGoTo.registrationPage();
         user = UserFactory.validRandomUser();
-        tempRegistration.registerValidUserAndLogInOrOut(user, false);
+        tempRegistration.registerValidUserAndLogInOrOut(user, true);
         requestContextState = tempCtx.storageState();
         tempCtx.close();
     }
@@ -86,21 +89,33 @@ public abstract class AuthenticatedBaseTest {
     }
 
     protected void navigateToSiteAndInitialisePages() {
-        page.navigate(TestConfig.getBaseUrl());
         goTo = new NavigationPage(page);
         registrationPage = new RegistrationPage(page);
         openNewAccountPage = new OpenNewAccountPage(page);
         accountsOverviewPage = new AccountsOverviewPage(page);
         loginPage = new LoginPage(page);
         transferFundsPage = new TransferFundsPage(page);
+        page.navigate(TestConfig.getBaseUrl());
     }
-
 
     private static void fetchAndCacheCustomerIdOnce() throws JsonProcessingException {
         if (customerId != null) return;
         CustomerAPI customerRequest = new CustomerAPI(request);
-        customerId = customerRequest.sendGetRequestToRetrieveCustomerId(user.getUsername(), user.getPassword());
+        ApiHelper helper = new ApiHelper();
+        APIResponse loginRequestResponse = customerRequest.sendGetRequestToLogIn(user.getUsername(), user.getPassword());
+        customerId = helper.getCustomerIdFromLoginRequestResponse(loginRequestResponse);
         if (customerId == null) {
+            throw new IllegalStateException("Login API returned null response");
+        }
+    }
+
+    private static void fetchAndCacheOriginalAccountIdOnce() throws JsonProcessingException {
+        if (originalAccountId != null) return;
+        CustomerAPI customerRequest = new CustomerAPI(request);
+        ApiHelper helper = new ApiHelper();
+        APIResponse loginRequestResponse = customerRequest.sendGetRequestForCustomerAccountsInfo(customerId);
+        originalAccountId = helper.getOriginalAccountIdFromResponse(loginRequestResponse);
+        if (originalAccountId == null) {
             throw new IllegalStateException("Login API returned null response");
         }
     }
