@@ -28,5 +28,9 @@ public class TestConfig {
         return properties.getProperty("base.url");
     }
 
+    public static String getApiBaseUrl() {
+            return properties.getProperty("api.base.url");
+    }
+
     public static boolean getHeadless() { return Boolean.parseBoolean(properties.getProperty("headless")); }
 }
