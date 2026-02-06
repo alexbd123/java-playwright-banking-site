@@ -22,9 +22,15 @@ public class OpenNewAccountTests extends AuthenticatedBaseTest {
     @BeforeAll
     public static void setUpAccountTestData() {
         accountActionsAPI = new AccountActionsAPI(request);
-        AccountDto newCheckingAccount = accountActionsAPI.createNewAccount(customerId, AccountTypes.CHECKING, originalAccountId);
+
+        AccountDto newCheckingAccount = accountActionsAPI.createNewAccount(customerContext.getCustomerId(),
+                AccountTypes.CHECKING,
+                customerContext.getOriginalAccountId());
         newCheckingAccountId = newCheckingAccount.getId();
-        AccountDto newSavingsAccount = accountActionsAPI.createNewAccount(customerId, AccountTypes.SAVINGS, originalAccountId);
+
+        AccountDto newSavingsAccount = accountActionsAPI.createNewAccount(customerContext.getCustomerId(),
+                AccountTypes.SAVINGS,
+                customerContext.getOriginalAccountId());
         newSavingsAccountId = newSavingsAccount.getId();
     }
 

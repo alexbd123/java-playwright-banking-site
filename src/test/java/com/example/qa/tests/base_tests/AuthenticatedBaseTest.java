@@ -1,7 +1,7 @@
 package com.example.qa.tests.base_tests;
 
-import com.example.qa.api.clients.AccountActionsAPI;
-import com.example.qa.api.clients.CustomerAPI;
+import com.example.qa.api.context.CustomerContext;
+import com.example.qa.api.context.CustomerContextBuilder;
 import com.example.qa.config.TestConfig;
 import com.example.qa.models.User;
 import com.example.qa.models.UserFactory;
@@ -22,8 +22,6 @@ public abstract class AuthenticatedBaseTest {
     protected BrowserContext context;
     protected Page page;
     protected static User user;
-    protected static Integer customerId;
-    protected static Integer originalAccountId;
     protected OpenNewAccountPage openNewAccountPage;
     protected NavigationPage goTo;
     protected RegistrationPage registrationPage;
@@ -32,6 +30,7 @@ public abstract class AuthenticatedBaseTest {
     protected TransferFundsPage transferFundsPage;
     protected static APIRequestContext request;
     protected static String requestContextState;
+    protected static CustomerContext customerContext;
 
     @BeforeAll
     static void globalSetUp() {
@@ -39,8 +38,7 @@ public abstract class AuthenticatedBaseTest {
         browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(TestConfig.getHeadless()));
         createAPIRequestContext();
         createAndRegisterUserInTempContext();
-        fetchAndCacheCustomerIdOnce();
-        fetchAndCacheOriginalAccountIdOnce();
+        customerContext = new CustomerContextBuilder(request).buildContextFor(user);
     }
 
     @AfterAll
@@ -94,24 +92,6 @@ public abstract class AuthenticatedBaseTest {
         loginPage = new LoginPage(page);
         transferFundsPage = new TransferFundsPage(page);
         page.navigate(TestConfig.getBaseUrl());
-    }
-
-    private static void fetchAndCacheCustomerIdOnce() {
-        if (customerId != null) return;
-        CustomerAPI customerRequests = new CustomerAPI(request);
-        customerId = customerRequests.sendGetRequestToLogIn(user.getUsername(), user.getPassword()).getId();
-        if (customerId == null) {
-            throw new IllegalStateException("Login API returned null response");
-        }
-    }
-
-    private static void fetchAndCacheOriginalAccountIdOnce() {
-        if (originalAccountId != null) return;
-        AccountActionsAPI accountRequests = new AccountActionsAPI(request);
-        originalAccountId = accountRequests.sendGetRequestForCustomerAccountsInfo(customerId).get(0).getId();
-        if (originalAccountId == null) {
-            throw new IllegalStateException("Login API returned null response");
-        }
     }
 
 }
