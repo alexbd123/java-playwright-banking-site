@@ -1,13 +1,11 @@
 package com.example.qa.tests.base_tests;
 
-import com.example.qa.api.ApiHelper;
+import com.example.qa.api.clients.AccountActionsAPI;
 import com.example.qa.api.clients.CustomerAPI;
-import com.example.qa.api.dtos.CustomerDto;
 import com.example.qa.config.TestConfig;
 import com.example.qa.models.User;
 import com.example.qa.models.UserFactory;
 import com.example.qa.pages.*;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.microsoft.playwright.*;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -36,7 +34,7 @@ public abstract class AuthenticatedBaseTest {
     protected static String requestContextState;
 
     @BeforeAll
-    static void globalSetUp() throws JsonProcessingException {
+    static void globalSetUp() {
         playwright = Playwright.create();
         browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(TestConfig.getHeadless()));
         createAPIRequestContext();
@@ -98,23 +96,19 @@ public abstract class AuthenticatedBaseTest {
         page.navigate(TestConfig.getBaseUrl());
     }
 
-    private static void fetchAndCacheCustomerIdOnce() throws JsonProcessingException {
+    private static void fetchAndCacheCustomerIdOnce() {
         if (customerId != null) return;
-        CustomerAPI customerRequest = new CustomerAPI(request);
-        ApiHelper helper = new ApiHelper();
-        APIResponse loginRequestResponse = customerRequest.sendGetRequestToLogIn(user.getUsername(), user.getPassword());
-        customerId = helper.getCustomerIdFromLoginRequestResponse(loginRequestResponse);
+        CustomerAPI customerRequests = new CustomerAPI(request);
+        customerId = customerRequests.sendGetRequestToLogIn(user.getUsername(), user.getPassword()).getId();
         if (customerId == null) {
             throw new IllegalStateException("Login API returned null response");
         }
     }
 
-    private static void fetchAndCacheOriginalAccountIdOnce() throws JsonProcessingException {
+    private static void fetchAndCacheOriginalAccountIdOnce() {
         if (originalAccountId != null) return;
-        CustomerAPI customerRequest = new CustomerAPI(request);
-        ApiHelper helper = new ApiHelper();
-        APIResponse loginRequestResponse = customerRequest.sendGetRequestForCustomerAccountsInfo(customerId);
-        originalAccountId = helper.getOriginalAccountIdFromResponse(loginRequestResponse);
+        AccountActionsAPI accountRequests = new AccountActionsAPI(request);
+        originalAccountId = accountRequests.sendGetRequestForCustomerAccountsInfo(customerId).get(0).getId();
         if (originalAccountId == null) {
             throw new IllegalStateException("Login API returned null response");
         }
