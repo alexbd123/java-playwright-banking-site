@@ -5,11 +5,9 @@ import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 
 public class AccountsOverviewPage {
-    private final Page page;
     private final Locator accountTable;
 
     public AccountsOverviewPage(Page page) {
-        this.page = page;
         this.accountTable = page.locator("#accountTable");
     }
 
@@ -22,5 +20,9 @@ public class AccountsOverviewPage {
     public Locator accountNumberLinkInAccountTable(String accountNumber) {
         return accountTable.getByRole(AriaRole.LINK,
                 new Locator.GetByRoleOptions().setName(accountNumber.trim()).setExact(true));
+    }
+
+    public Locator accountBalanceInTable(String accountNumber) {
+        return accountNumberLinkInAccountTable(accountNumber).locator("xpath=ancestor::td/following-sibling::td[1]");
     }
 }

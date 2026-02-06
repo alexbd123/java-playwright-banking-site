@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.playwright.APIRequestContext;
 import com.microsoft.playwright.APIResponse;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class AccountActionsAPI {
@@ -47,6 +48,13 @@ public class AccountActionsAPI {
             });
         } catch (Exception e) {
             throw new RuntimeException("Failed to get customer account info", e);
+        }
+    }
+
+    public void sendPostRequestToDepositFunds(int accountId, BigDecimal amount) {
+        APIResponse response = request.post(String.format("deposit?accountId=%d&amount=%.2f", accountId, amount));
+        if (!response.ok()) {
+            throw new IllegalStateException("Failed to deposit funds");
         }
     }
 

@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.math.BigDecimal;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AccountDto {
@@ -19,11 +21,11 @@ public class AccountDto {
     private AccountTypes type;
 
     @JsonProperty("balance")
-    private double balance;
+    private BigDecimal balance;
 
     public AccountDto() {}
 
-    public AccountDto(Integer id, Integer customerId, AccountTypes type, double balance) {
+    public AccountDto(Integer id, Integer customerId, AccountTypes type, BigDecimal balance) {
         this.id = id;
         this.customerId = customerId;
         this.type = type;
@@ -39,7 +41,7 @@ public class AccountDto {
     public AccountTypes getType() { return type; }
     public void setType(AccountTypes type) { this.type = type; }
 
-    public double getBalance() { return balance; }
-    public void setBalance(double balance) { this.balance = balance; }
+    public BigDecimal getBalance() { return balance; }
+    public void setBalance(BigDecimal balance) { this.balance = balance; }
 
 }
