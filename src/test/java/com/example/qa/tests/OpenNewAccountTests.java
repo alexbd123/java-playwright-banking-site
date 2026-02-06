@@ -17,9 +17,10 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class OpenNewAccountTests extends AuthenticatedBaseTest {
 
+    private final BigDecimal DEFAULT_BALANCE = BigDecimal.valueOf(100);
+
     protected static AccountActionsAPI accountActionsAPI;
     protected AccountDto originalCheckingAccount;
-    private final BigDecimal DEFAULT_BALANCE = BigDecimal.valueOf(100);
 
     @BeforeEach
     void initApiClients() {
@@ -46,16 +47,20 @@ public class OpenNewAccountTests extends AuthenticatedBaseTest {
                 accountType,
                 originalCheckingAccount);
         BigDecimal fundsToDeposit = BigDecimal.valueOf(100);
-        accountActionsAPI.sendPostRequestToDepositFunds(newAccount, fundsToDeposit);
-        BigDecimal expectedBalance = newAccount.getBalance()
-                .add(fundsToDeposit);
+        BigDecimal expectedBalanceAfterDeposit = depositFundsAndReturnExpectedBalance(newAccount, fundsToDeposit);
         goToOverviewAndWaitForTableVisibility();
-        accountsOverviewPage.assertThatBalanceIsVisibleAndAmountIsCorrect(newAccount, expectedBalance);
+        accountsOverviewPage.assertThatBalanceIsVisibleAndAmountIsCorrect(newAccount, expectedBalanceAfterDeposit);
     }
 
     public void goToOverviewAndWaitForTableVisibility() {
         goTo.accountsOverview();
         assertThat(accountsOverviewPage.accountTable()).isVisible();
+    }
+
+    public BigDecimal depositFundsAndReturnExpectedBalance(AccountDto intoAccount, BigDecimal amount) {
+        BigDecimal originalBalance = intoAccount.getBalance();
+        accountActionsAPI.sendPostRequestToDepositFunds(intoAccount, amount);
+        return originalBalance.add(amount);
     }
 
 }

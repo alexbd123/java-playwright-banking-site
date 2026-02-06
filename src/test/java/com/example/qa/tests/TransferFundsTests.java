@@ -18,7 +18,7 @@ public class TransferFundsTests extends AuthenticatedBaseTest {
 
 
     @BeforeEach
-    void initApiClients() {
+    void initApiAndGetContext() {
         accountActionsAPI = new AccountActionsAPI(request);
         originalCheckingAccount = customerContext.getOriginalAccount();
     }
@@ -26,44 +26,51 @@ public class TransferFundsTests extends AuthenticatedBaseTest {
     @ParameterizedTest(name = "Funds transferred via API from original account to new {0} account appear in overview")
     @EnumSource(AccountTypes.class)
     void transferredFundsToNewAccountShouldAppearInOverview(AccountTypes accountType) {
-        AccountDto toNewAccount = accountActionsAPI.createNewAccount(
+        AccountDto newAccountToReceiveFunds = accountActionsAPI.createNewAccount(
                 customerContext.getCustomerId(),
                 accountType,
                 originalCheckingAccount);
-        toNewAccount.setBalance(BigDecimal.valueOf(100));
-        BigDecimal originalBalance = toNewAccount.getBalance();
         BigDecimal transferAmount = BigDecimal.valueOf(100);
-        accountActionsAPI.sendPostRequestToTransferFunds(
+        BigDecimal expectedBalanceAfterTransfer = transferFundsAndReturnExpectedBalance(
                 originalCheckingAccount,
-                toNewAccount,
+                newAccountToReceiveFunds,
                 transferAmount);
-        BigDecimal expectedBalance = originalBalance.add(BigDecimal.valueOf(100));
         goToOverviewAndWaitForTableVisibility();
-        accountsOverviewPage.assertThatBalanceIsVisibleAndAmountIsCorrect(toNewAccount, expectedBalance);
+        accountsOverviewPage.assertThatBalanceIsVisibleAndAmountIsCorrect(newAccountToReceiveFunds, expectedBalanceAfterTransfer);
     }  
 
     @ParameterizedTest(name = "Funds transferred via API from new {0} account to original account appear in overview")
     @EnumSource(AccountTypes.class)
     void transferredFundsToOriginalAccountShouldAppearInOverview(AccountTypes accountType) {
-        AccountDto fromNewAccount = accountActionsAPI.createNewAccount(
+        AccountDto newAccountToSendFrom = accountActionsAPI.createNewAccount(
                 customerContext.getCustomerId(),
                 accountType,
                 originalCheckingAccount);
-        BigDecimal originalBalance = originalCheckingAccount.getBalance();
         BigDecimal transferAmount = BigDecimal.valueOf(100);
-        accountActionsAPI.sendPostRequestToTransferFunds(
-                fromNewAccount,
+        BigDecimal expectedBalanceAfterTransfer = transferFundsAndReturnExpectedBalance(
+                newAccountToSendFrom,
                 originalCheckingAccount,
                 transferAmount);
-        BigDecimal expectedBalance = originalBalance.add(transferAmount);
         goToOverviewAndWaitForTableVisibility();
-        accountsOverviewPage.assertThatBalanceIsVisibleAndAmountIsCorrect(originalCheckingAccount, expectedBalance);
+        accountsOverviewPage.assertThatBalanceIsVisibleAndAmountIsCorrect(originalCheckingAccount, expectedBalanceAfterTransfer);
     }
 
-    //Small helpers
+    //Test helpers
 
     public void goToOverviewAndWaitForTableVisibility() {
         goTo.accountsOverview();
         assertThat(accountsOverviewPage.accountTable()).isVisible();
+    }
+
+    public BigDecimal transferFundsAndReturnExpectedBalance(
+            AccountDto fromAccount,
+            AccountDto toAccount,
+            BigDecimal transferAmount) {
+        BigDecimal originalBalance = toAccount.getBalance();
+        accountActionsAPI.sendPostRequestToTransferFunds(
+                fromAccount,
+                toAccount,
+                transferAmount);
+        return originalBalance.add(transferAmount);
     }
 }
