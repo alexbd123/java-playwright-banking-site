@@ -19,20 +19,24 @@ public class AccountActionsAPI {
         this.request = request;
     }
 
+    //HTTP methods
     public AccountDto createNewAccount(
             Integer customerId,
             AccountTypes accountType,
-            Integer fromAccountId) {
+            AccountDto fromAccount) {
         Integer accountTypeInt = (accountType == AccountTypes.CHECKING) ? 0 : 1;
         APIResponse response = request.post(String.format("createAccount?customerId=%d&newAccountType=%d&fromAccountId=%d",
                 customerId,
                 accountTypeInt,
-                fromAccountId));
+                fromAccount.getId()));
         if (!response.ok()) {
             throw new IllegalStateException("Account creation failed");
         }
         try {
-            return mapper.readValue(response.text(), AccountDto.class);
+            AccountDto newAccountResponse = mapper.readValue(response.text(), AccountDto.class);
+            alignAccountBalanceWithBe(newAccountResponse);
+            alignAccountBalanceWithBe(fromAccount);
+            return newAccountResponse;
         } catch (Exception e) {
             throw new RuntimeException("Failed to parse account response", e);
         }
@@ -51,11 +55,45 @@ public class AccountActionsAPI {
         }
     }
 
-    public void sendPostRequestToDepositFunds(int accountId, BigDecimal amount) {
-        APIResponse response = request.post(String.format("deposit?accountId=%d&amount=%.2f", accountId, amount));
+    public void sendPostRequestToDepositFunds(AccountDto intoAccount, BigDecimal amount) {
+        APIResponse response = request.post(String.format(
+                "deposit?accountId=%d&amount=%.2f",
+                intoAccount.getId(),
+                amount));
         if (!response.ok()) {
             throw new IllegalStateException("Failed to deposit funds");
         }
+        alignAccountBalanceWithBe(intoAccount);
+    }
+
+    public void sendPostRequestToTransferFunds(AccountDto fromAccount, AccountDto toAccount, BigDecimal amount) {
+        APIResponse response = request.post(String.format(
+                "transfer?fromAccountId=%d&toAccountId=%d&amount=%.2f",
+                fromAccount.getId(),
+                toAccount.getId(), amount));
+        if (!response.ok()) {
+            throw new IllegalStateException("Failed to transfer funds");
+        }
+        alignAccountBalanceWithBe(fromAccount);
+        alignAccountBalanceWithBe(toAccount);
+    }
+
+    public AccountDto getAccountById(Integer accountId) {
+        APIResponse response = request.get(String.format("accounts/%d", accountId));
+        if (!response.ok()) {
+            throw new IllegalStateException("Failed to get account info");
+        }
+        try {
+            return mapper.readValue(response.text(), AccountDto.class);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to parse account response", e);
+        }
+    }
+
+    //Helpers
+    public void alignAccountBalanceWithBe(AccountDto account) {
+        AccountDto accountSnapshot = getAccountById(account.getId());
+        account.setBalance(accountSnapshot.getBalance());
     }
 
 }

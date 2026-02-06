@@ -1,21 +1,23 @@
 package com.example.qa.api.context;
 
+import com.example.qa.api.dtos.AccountDto;
+
 public class CustomerContext {
 
     private final int customerId;
-    private final int originalAccountId;
+    private final AccountDto originalAccount;
     
-    CustomerContext (int customerId, int originalAccountId) {
+    CustomerContext (int customerId, AccountDto originalAccount) {
         this.customerId = customerId;
-        this.originalAccountId = originalAccountId;
+        this.originalAccount = originalAccount;
     }
     
     public int getCustomerId() {
         return customerId;
     }
     
-    public int getOriginalAccountId() {
-        return originalAccountId;
+    public AccountDto getOriginalAccount() {
+        return originalAccount;
     }
 
 }
