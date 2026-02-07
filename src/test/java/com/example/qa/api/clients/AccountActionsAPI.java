@@ -52,10 +52,10 @@ public class AccountActionsAPI {
         }
     }
 
-    public void sendPostRequestToDepositFunds(AccountDto intoAccount, BigDecimal amount) {
+    public void sendPostRequestToDepositFunds(int intoAccountId, BigDecimal amount) {
         APIResponse response = request.post(String.format(
                 "deposit?accountId=%d&amount=%.2f",
-                intoAccount.getId(),
+                intoAccountId,
                 amount));
         if (!response.ok()) {
             throw new IllegalStateException("Failed to deposit funds");

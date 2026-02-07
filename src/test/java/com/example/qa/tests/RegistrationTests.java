@@ -1,7 +1,6 @@
 package com.example.qa.tests;
 
 import com.example.qa.enums.RegistrationFieldErrorMessage;
-import com.example.qa.models.UserFactory;
 import com.example.qa.tests.base_tests.BaseTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

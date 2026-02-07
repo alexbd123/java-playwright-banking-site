@@ -10,7 +10,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
@@ -48,7 +47,7 @@ public class OpenNewAccountTests extends AuthenticatedBaseTest {
                 originalCheckingAccount);
         BigDecimal fundsToDeposit = new BigDecimal("100.00");
 
-        accountActionsAPI.sendPostRequestToDepositFunds(newAccount, fundsToDeposit);
+        accountActionsAPI.sendPostRequestToDepositFunds(newAccount.getId(), fundsToDeposit);
 
         BigDecimal expectedBalance = accountActionsAPI.getAccountById(newAccount.getId()).getBalance();
         goToOverviewAndWaitForTableVisibility();
