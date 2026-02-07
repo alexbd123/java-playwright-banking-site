@@ -46,21 +46,18 @@ public class OpenNewAccountTests extends AuthenticatedBaseTest {
                 customerContext.getCustomerId(),
                 accountType,
                 originalCheckingAccount);
-        BigDecimal fundsToDeposit = BigDecimal.valueOf(100);
-        BigDecimal expectedBalanceAfterDeposit = depositFundsAndReturnExpectedBalance(newAccount, fundsToDeposit);
+        BigDecimal fundsToDeposit = new BigDecimal("100.00");
+
+        accountActionsAPI.sendPostRequestToDepositFunds(newAccount, fundsToDeposit);
+
+        BigDecimal expectedBalance = accountActionsAPI.getAccountById(newAccount.getId()).getBalance();
         goToOverviewAndWaitForTableVisibility();
-        accountsOverviewPage.assertThatBalanceIsVisibleAndAmountIsCorrect(newAccount, expectedBalanceAfterDeposit);
+        accountsOverviewPage.assertThatBalanceIsVisibleAndAmountIsCorrect(newAccount, expectedBalance);
     }
 
     public void goToOverviewAndWaitForTableVisibility() {
         goTo.accountsOverview();
         assertThat(accountsOverviewPage.accountTable()).isVisible();
-    }
-
-    public BigDecimal depositFundsAndReturnExpectedBalance(AccountDto intoAccount, BigDecimal amount) {
-        BigDecimal originalBalance = intoAccount.getBalance();
-        accountActionsAPI.sendPostRequestToDepositFunds(intoAccount, amount);
-        return originalBalance.add(amount);
     }
 
 }

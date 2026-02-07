@@ -33,10 +33,7 @@ public class AccountActionsAPI {
             throw new IllegalStateException("Account creation failed");
         }
         try {
-            AccountDto newAccountResponse = mapper.readValue(response.text(), AccountDto.class);
-            alignAccountBalanceWithBe(newAccountResponse);
-            alignAccountBalanceWithBe(fromAccount);
-            return newAccountResponse;
+            return mapper.readValue(response.text(), AccountDto.class);
         } catch (Exception e) {
             throw new RuntimeException("Failed to parse account response", e);
         }
@@ -63,19 +60,16 @@ public class AccountActionsAPI {
         if (!response.ok()) {
             throw new IllegalStateException("Failed to deposit funds");
         }
-        alignAccountBalanceWithBe(intoAccount);
     }
 
-    public void sendPostRequestToTransferFunds(AccountDto fromAccount, AccountDto toAccount, BigDecimal amount) {
+    public void sendPostRequestToTransferFunds(int fromAccountId, int toAccountId, BigDecimal amount) {
         APIResponse response = request.post(String.format(
                 "transfer?fromAccountId=%d&toAccountId=%d&amount=%.2f",
-                fromAccount.getId(),
-                toAccount.getId(), amount));
+                fromAccountId,
+                toAccountId, amount));
         if (!response.ok()) {
             throw new IllegalStateException("Failed to transfer funds");
         }
-        alignAccountBalanceWithBe(fromAccount);
-        alignAccountBalanceWithBe(toAccount);
     }
 
     public AccountDto getAccountById(Integer accountId) {
@@ -89,11 +83,4 @@ public class AccountActionsAPI {
             throw new RuntimeException("Failed to parse account response", e);
         }
     }
-
-    //Helpers
-    public void alignAccountBalanceWithBe(AccountDto account) {
-        AccountDto accountSnapshot = getAccountById(account.getId());
-        account.setBalance(accountSnapshot.getBalance());
-    }
-
 }

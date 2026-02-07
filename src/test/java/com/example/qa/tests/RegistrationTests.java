@@ -19,7 +19,7 @@ public class RegistrationTests extends BaseTest {
 
     @Test
     void validUserCanSubmitRegistration() {
-        registrationPage.fillRegistrationFieldsWithValidUser(UserFactory.validRandomUser());
+        registrationPage.fillRegistrationFieldsWithValidUser(user);
         registrationPage.clickSubmitRegistrationButton();
         assertThat(registrationPage.registrationSuccessfulMessage()).isVisible();
     }

@@ -30,27 +30,34 @@ public class TransferFundsTests extends AuthenticatedBaseTest {
                 customerContext.getCustomerId(),
                 accountType,
                 originalCheckingAccount);
-        BigDecimal transferAmount = BigDecimal.valueOf(100);
-        BigDecimal expectedBalanceAfterTransfer = transferFundsAndReturnExpectedBalance(
-                originalCheckingAccount,
-                newAccountToReceiveFunds,
+        BigDecimal transferAmount = new BigDecimal("100.00");
+
+        accountActionsAPI.sendPostRequestToTransferFunds(
+                originalCheckingAccount.getId(),
+                newAccountToReceiveFunds.getId(),
                 transferAmount);
+
+        BigDecimal expectedBalanceAfterTransfer = accountActionsAPI.getAccountById(newAccountToReceiveFunds.getId()).getBalance();
         goToOverviewAndWaitForTableVisibility();
         accountsOverviewPage.assertThatBalanceIsVisibleAndAmountIsCorrect(newAccountToReceiveFunds, expectedBalanceAfterTransfer);
-    }  
+    }
 
     @ParameterizedTest(name = "Funds transferred via API from new {0} account to original account appear in overview")
     @EnumSource(AccountTypes.class)
     void transferredFundsToOriginalAccountShouldAppearInOverview(AccountTypes accountType) {
+
         AccountDto newAccountToSendFrom = accountActionsAPI.createNewAccount(
                 customerContext.getCustomerId(),
                 accountType,
                 originalCheckingAccount);
-        BigDecimal transferAmount = BigDecimal.valueOf(100);
-        BigDecimal expectedBalanceAfterTransfer = transferFundsAndReturnExpectedBalance(
-                newAccountToSendFrom,
-                originalCheckingAccount,
+        BigDecimal transferAmount = new BigDecimal("100.00");
+
+        accountActionsAPI.sendPostRequestToTransferFunds(
+                newAccountToSendFrom.getId(),
+                originalCheckingAccount.getId(),
                 transferAmount);
+
+        BigDecimal expectedBalanceAfterTransfer = accountActionsAPI.getAccountById(originalCheckingAccount.getId()).getBalance();
         goToOverviewAndWaitForTableVisibility();
         accountsOverviewPage.assertThatBalanceIsVisibleAndAmountIsCorrect(originalCheckingAccount, expectedBalanceAfterTransfer);
     }
@@ -62,15 +69,4 @@ public class TransferFundsTests extends AuthenticatedBaseTest {
         assertThat(accountsOverviewPage.accountTable()).isVisible();
     }
 
-    public BigDecimal transferFundsAndReturnExpectedBalance(
-            AccountDto fromAccount,
-            AccountDto toAccount,
-            BigDecimal transferAmount) {
-        BigDecimal originalBalance = toAccount.getBalance();
-        accountActionsAPI.sendPostRequestToTransferFunds(
-                fromAccount,
-                toAccount,
-                transferAmount);
-        return originalBalance.add(transferAmount);
-    }
 }
