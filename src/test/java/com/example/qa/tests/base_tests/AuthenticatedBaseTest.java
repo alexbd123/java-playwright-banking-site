@@ -28,6 +28,8 @@ public abstract class AuthenticatedBaseTest {
     protected AccountsOverviewPage accountsOverviewPage;
     protected LoginPage loginPage;
     protected TransferFundsPage transferFundsPage;
+    protected FindTransactionsPage findTransactionsPage;
+    protected TransactionDetailsPage transactionDetailsPage;
     protected static APIRequestContext request;
     protected static String requestContextState;
     protected static CustomerContext customerContext;
@@ -91,6 +93,8 @@ public abstract class AuthenticatedBaseTest {
         accountsOverviewPage = new AccountsOverviewPage(page);
         loginPage = new LoginPage(page);
         transferFundsPage = new TransferFundsPage(page);
+        findTransactionsPage = new FindTransactionsPage(page);
+        transactionDetailsPage = new TransactionDetailsPage(page);
         page.navigate(TestConfig.getBaseUrl());
     }
 

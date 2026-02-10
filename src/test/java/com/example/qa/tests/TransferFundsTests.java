@@ -45,7 +45,6 @@ public class TransferFundsTests extends AuthenticatedBaseTest {
     @ParameterizedTest(name = "Funds transferred via API from new {0} account to original account appear in overview")
     @EnumSource(AccountTypes.class)
     void transferredFundsToOriginalAccountShouldAppearInOverview(AccountTypes accountType) {
-
         AccountDto newAccountToSendFrom = accountActionsAPI.createNewAccount(
                 customerContext.getCustomerId(),
                 accountType,
