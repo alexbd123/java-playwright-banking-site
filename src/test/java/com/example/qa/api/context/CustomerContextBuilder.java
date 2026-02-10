@@ -6,8 +6,6 @@ import com.example.qa.api.dtos.AccountDto;
 import com.example.qa.models.User;
 import com.microsoft.playwright.APIRequestContext;
 
-import java.math.BigDecimal;
-
 public class CustomerContextBuilder {
 
     private final CustomerAPI customerRequests;
@@ -21,7 +19,7 @@ public class CustomerContextBuilder {
     public CustomerContext buildContextFor(User user) {
         int customerId;
         AccountDto originalAccount;
-        customerId = customerRequests.sendGetRequestToLogIn(user.getUsername(), user.getPassword()).getId();
+        customerId = customerRequests.sendGetRequestToLogIn(user.getUsername(), user.getPassword()).id();
         originalAccount = accountRequests.sendGetRequestForCustomerAccountsInfo(customerId).get(0);
         return new CustomerContext(customerId, originalAccount);
     }

@@ -26,7 +26,7 @@ public class FindTransactionTests extends AuthenticatedBaseTest {
 
     @Test
     void userCanFindTransactionByDate() {
-        int accountId = originalCheckingAccount.getId();
+        int accountId = originalCheckingAccount.id();
         BigDecimal amountToWithdraw = new BigDecimal("100.00");
         accountActionsAPI.sendPostRequestToWithdrawFunds(accountId, amountToWithdraw);
         List<TransactionDto> transactionsForAccount = accountActionsAPI.sendGetRequestForAllTransactionsForAccount(accountId);

@@ -38,8 +38,8 @@ public class AccountsOverviewPage {
         return "$" + bigDecimal.setScale(2, RoundingMode.HALF_UP);
     }
 
-    public void assertThatBalanceIsVisibleAndAmountIsCorrect(AccountDto account, BigDecimal expectedBalance) {
-        assertThat(accountBalanceInTable(String.valueOf(account.getId())))
+    public void assertThatBalanceIsVisibleAndAmountIsCorrect(int accountId, BigDecimal expectedBalance) {
+        assertThat(accountBalanceInTable(String.valueOf(accountId)))
                 .hasText(convertBigDecimalToExpectedBalanceString(expectedBalance));
     }
 

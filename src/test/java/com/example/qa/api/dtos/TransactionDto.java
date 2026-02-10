@@ -27,4 +27,5 @@ public record TransactionDto(
 
         @JsonProperty("description")
         String description
+
 ) {}

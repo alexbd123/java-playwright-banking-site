@@ -29,17 +29,17 @@ public class TransferFundsTests extends AuthenticatedBaseTest {
         AccountDto newAccountToReceiveFunds = accountActionsAPI.createNewAccount(
                 customerContext.getCustomerId(),
                 accountType,
-                originalCheckingAccount);
+                originalCheckingAccount.id());
         BigDecimal transferAmount = new BigDecimal("100.00");
 
         accountActionsAPI.sendPostRequestToTransferFunds(
-                originalCheckingAccount.getId(),
-                newAccountToReceiveFunds.getId(),
+                originalCheckingAccount.id(),
+                newAccountToReceiveFunds.id(),
                 transferAmount);
 
-        BigDecimal expectedBalanceAfterTransfer = accountActionsAPI.getAccountById(newAccountToReceiveFunds.getId()).getBalance();
+        BigDecimal expectedBalanceAfterTransfer = accountActionsAPI.getAccountById(newAccountToReceiveFunds.id()).balance();
         goToOverviewAndWaitForTableVisibility();
-        accountsOverviewPage.assertThatBalanceIsVisibleAndAmountIsCorrect(newAccountToReceiveFunds, expectedBalanceAfterTransfer);
+        accountsOverviewPage.assertThatBalanceIsVisibleAndAmountIsCorrect(newAccountToReceiveFunds.id(), expectedBalanceAfterTransfer);
     }
 
     @ParameterizedTest(name = "Funds transferred via API from new {0} account to original account appear in overview")
@@ -48,17 +48,17 @@ public class TransferFundsTests extends AuthenticatedBaseTest {
         AccountDto newAccountToSendFrom = accountActionsAPI.createNewAccount(
                 customerContext.getCustomerId(),
                 accountType,
-                originalCheckingAccount);
+                originalCheckingAccount.id());
         BigDecimal transferAmount = new BigDecimal("100.00");
 
         accountActionsAPI.sendPostRequestToTransferFunds(
-                newAccountToSendFrom.getId(),
-                originalCheckingAccount.getId(),
+                newAccountToSendFrom.id(),
+                originalCheckingAccount.id(),
                 transferAmount);
 
-        BigDecimal expectedBalanceAfterTransfer = accountActionsAPI.getAccountById(originalCheckingAccount.getId()).getBalance();
+        BigDecimal expectedBalanceAfterTransfer = accountActionsAPI.getAccountById(originalCheckingAccount.id()).balance();
         goToOverviewAndWaitForTableVisibility();
-        accountsOverviewPage.assertThatBalanceIsVisibleAndAmountIsCorrect(originalCheckingAccount, expectedBalanceAfterTransfer);
+        accountsOverviewPage.assertThatBalanceIsVisibleAndAmountIsCorrect(originalCheckingAccount.id(), expectedBalanceAfterTransfer);
     }
 
     //Test helpers

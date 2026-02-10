@@ -33,9 +33,9 @@ public class OpenNewAccountTests extends AuthenticatedBaseTest {
         AccountDto newAccount = accountActionsAPI.createNewAccount(
                 customerContext.getCustomerId(),
                 accountType,
-                originalCheckingAccount);
+                originalCheckingAccount.id());
         goToOverviewAndWaitForTableVisibility();
-        accountsOverviewPage.assertThatBalanceIsVisibleAndAmountIsCorrect(newAccount, DEFAULT_BALANCE);
+        accountsOverviewPage.assertThatBalanceIsVisibleAndAmountIsCorrect(newAccount.id(), DEFAULT_BALANCE);
     }
 
     @ParameterizedTest(name="Funds deposited via API into new {0} account are visible in Account Overview")
@@ -44,14 +44,14 @@ public class OpenNewAccountTests extends AuthenticatedBaseTest {
         AccountDto newAccount = accountActionsAPI.createNewAccount(
                 customerContext.getCustomerId(),
                 accountType,
-                originalCheckingAccount);
+                originalCheckingAccount.id());
         BigDecimal fundsToDeposit = new BigDecimal("100.00");
 
-        accountActionsAPI.sendPostRequestToDepositFunds(newAccount.getId(), fundsToDeposit);
+        accountActionsAPI.sendPostRequestToDepositFunds(newAccount.id(), fundsToDeposit);
 
-        BigDecimal expectedBalance = accountActionsAPI.getAccountById(newAccount.getId()).getBalance();
+        BigDecimal expectedBalance = accountActionsAPI.getAccountById(newAccount.id()).balance();
         goToOverviewAndWaitForTableVisibility();
-        accountsOverviewPage.assertThatBalanceIsVisibleAndAmountIsCorrect(newAccount, expectedBalance);
+        accountsOverviewPage.assertThatBalanceIsVisibleAndAmountIsCorrect(newAccount.id(), expectedBalance);
     }
 
     public void goToOverviewAndWaitForTableVisibility() {

@@ -26,12 +26,12 @@ public class AccountActionsAPI {
     public AccountDto createNewAccount(
             Integer customerId,
             AccountTypes accountType,
-            AccountDto fromAccount) {
+            int fromAccountId) {
         Integer accountTypeInt = (accountType == AccountTypes.CHECKING) ? 0 : 1;
         APIResponse response = request.post(String.format("createAccount?customerId=%d&newAccountType=%d&fromAccountId=%d",
                 customerId,
                 accountTypeInt,
-                fromAccount.getId()));
+                fromAccountId));
         if (!response.ok()) {
             throw new IllegalStateException("Account creation failed");
         }
