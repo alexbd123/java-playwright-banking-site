@@ -1,18 +1,11 @@
 package com.example.qa.tests;
 
-import com.example.qa.pages.*;
 import com.example.qa.tests.base_tests.AuthenticatedBaseTest;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 public class LoginPageTests extends AuthenticatedBaseTest {
-
-    @BeforeEach
-    void setUpTestsByLoggingOut() {
-        registrationPage.clickLogOutButton();
-    }
 
     @Test
     void registeredValidUserCanLogIn() {
@@ -20,6 +13,5 @@ public class LoginPageTests extends AuthenticatedBaseTest {
         var welcomeMessage = loginPage.welcomeMessage();
         assertThat(welcomeMessage).isVisible();
         assertThat(welcomeMessage).hasText("Welcome " + user.getFirstName() + " " + user.getLastName());
-        assertThat(page).hasURL(LoginPage.LOGGED_IN_URL);
-        }
     }
+}

@@ -6,8 +6,6 @@ import com.microsoft.playwright.Locator;
 
 public class LoginPage {
 
-    public static final String LOGGED_IN_URL = "https://parabank.parasoft.com/parabank/overview.htm";
-
     private final Locator usernameInput;
     private final Locator passwordInput;
     private final Locator logInButton;

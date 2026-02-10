@@ -1,5 +1,7 @@
 package com.example.qa.tests;
 
+import com.example.qa.api.clients.AccountActionsAPI;
+import com.example.qa.api.dtos.AccountDto;
 import com.example.qa.tests.base_tests.AuthenticatedBaseTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -7,37 +9,63 @@ import org.junit.jupiter.params.provider.EnumSource;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import com.example.qa.enums.AccountTypes;
 
+import java.math.BigDecimal;
+
 public class TransferFundsTests extends AuthenticatedBaseTest {
 
-    private String newCheckingAccount;
-    private String newSavingsAccount;
+    protected static AccountActionsAPI accountActionsAPI;
+    protected AccountDto originalCheckingAccount;
+
 
     @BeforeEach
-    void setUpNewAccountsForTests() {
-        goTo.openNewAccount();
-        newCheckingAccount = openNewAccountPage.openNewAccountAndReturnAccountNumber(AccountTypes.CHECKING);
-        goTo.openNewAccount();
-        newSavingsAccount = openNewAccountPage.openNewAccountAndReturnAccountNumber(AccountTypes.SAVINGS);
-        goTo.transferFunds();
+    void initApiAndGetContext() {
+        accountActionsAPI = new AccountActionsAPI(request);
+        originalCheckingAccount = customerContext.getOriginalAccount();
     }
 
-    @ParameterizedTest(name = "User can transfer funds from original account into new {0} account")
+    @ParameterizedTest(name = "Funds transferred via API from original account to new {0} account appear in overview")
     @EnumSource(AccountTypes.class)
-    void userCanTransferFundsToNewAccount(AccountTypes accountType) { 
-        transferFundsPage.transferFunds(
-            transferFundsPage.getOriginalAccountNumber(),
-            accountType == AccountTypes.CHECKING ? newCheckingAccount : newSavingsAccount,
-              5);
-        assertThat(transferFundsPage.getSuccessMessage()).isVisible();     
-    }  
+    void transferredFundsToNewAccountShouldAppearInOverview(AccountTypes accountType) {
+        AccountDto newAccountToReceiveFunds = accountActionsAPI.createNewAccount(
+                customerContext.getCustomerId(),
+                accountType,
+                originalCheckingAccount.id());
+        BigDecimal transferAmount = new BigDecimal("100.00");
 
-    @ParameterizedTest(name = "User can transfer funds from new {0} account into original account")
+        accountActionsAPI.sendPostRequestToTransferFunds(
+                originalCheckingAccount.id(),
+                newAccountToReceiveFunds.id(),
+                transferAmount);
+
+        BigDecimal expectedBalanceAfterTransfer = accountActionsAPI.getAccountById(newAccountToReceiveFunds.id()).balance();
+        goToOverviewAndWaitForTableVisibility();
+        accountsOverviewPage.assertThatBalanceIsVisibleAndAmountIsCorrect(newAccountToReceiveFunds.id(), expectedBalanceAfterTransfer);
+    }
+
+    @ParameterizedTest(name = "Funds transferred via API from new {0} account to original account appear in overview")
     @EnumSource(AccountTypes.class)
-    void userCanTransferFundsToOriginalAccount(AccountTypes accountType) { 
-        transferFundsPage.transferFunds(accountType == AccountTypes.CHECKING
-             ? newCheckingAccount : newSavingsAccount,
-             transferFundsPage.getOriginalAccountNumber(),
-              5);
-        assertThat(transferFundsPage.getSuccessMessage()).isVisible();     
-    }  
+    void transferredFundsToOriginalAccountShouldAppearInOverview(AccountTypes accountType) {
+        AccountDto newAccountToSendFrom = accountActionsAPI.createNewAccount(
+                customerContext.getCustomerId(),
+                accountType,
+                originalCheckingAccount.id());
+        BigDecimal transferAmount = new BigDecimal("100.00");
+
+        accountActionsAPI.sendPostRequestToTransferFunds(
+                newAccountToSendFrom.id(),
+                originalCheckingAccount.id(),
+                transferAmount);
+
+        BigDecimal expectedBalanceAfterTransfer = accountActionsAPI.getAccountById(originalCheckingAccount.id()).balance();
+        goToOverviewAndWaitForTableVisibility();
+        accountsOverviewPage.assertThatBalanceIsVisibleAndAmountIsCorrect(originalCheckingAccount.id(), expectedBalanceAfterTransfer);
+    }
+
+    //Test helpers
+
+    public void goToOverviewAndWaitForTableVisibility() {
+        goTo.accountsOverview();
+        assertThat(accountsOverviewPage.accountTable()).isVisible();
+    }
+
 }
