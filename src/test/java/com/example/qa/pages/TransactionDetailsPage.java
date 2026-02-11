@@ -6,9 +6,6 @@ import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 
 public class TransactionDetailsPage {
     private final Page page;
@@ -18,8 +15,6 @@ public class TransactionDetailsPage {
     private final Locator descriptionCell;
     private final Locator typeCell;
     private final Locator amountCell;
-
-    private static final DateTimeFormatter UI_DATE = DateTimeFormatter.ofPattern("MM-dd-yyyy");
 
     public TransactionDetailsPage(Page page, TimeUtils time) {
         this.page = page;

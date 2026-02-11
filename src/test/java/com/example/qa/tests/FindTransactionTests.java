@@ -3,34 +3,41 @@ package com.example.qa.tests;
 import com.example.qa.api.clients.AccountActionsAPI;
 import com.example.qa.api.dtos.AccountDto;
 import com.example.qa.api.dtos.TransactionDto;
+import com.example.qa.enums.AccountTypes;
 import com.example.qa.tests.base_tests.AuthenticatedBaseTest;
 import com.example.qa.tests.utils.TimeUtils;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Stream;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class FindTransactionTests extends AuthenticatedBaseTest {
 
     protected static AccountActionsAPI accountActionsAPI;
     protected AccountDto originalCheckingAccount;
+    protected AccountDto savingsAccount;
     protected static TimeUtils time;
 
-    @BeforeEach
+    @BeforeAll
     void initApiClients() {
         accountActionsAPI = new AccountActionsAPI(request);
         originalCheckingAccount = customerContext.getOriginalAccount();
+        savingsAccount = accountActionsAPI.createNewAccount(customerContext.getCustomerId(), AccountTypes.SAVINGS, originalCheckingAccount.id());
         time = new TimeUtils();
     }
 
-    @Test
-    void userCanFindTransactionByDate() {
-        int accountId = originalCheckingAccount.id();
-        BigDecimal amountToWithdraw = new BigDecimal("100.00");
+    @ParameterizedTest(name = "{2} of {0} from {1} account can be found by date")
+    @MethodSource("provideWithdrawalAmountAndAccountType")
+    void userCanFindWithdrawTransactionsByDate(BigDecimal amountToWithdraw, AccountTypes accountType, String amountDescription) {
+        int accountId = accountType == AccountTypes.CHECKING ? originalCheckingAccount.id() : savingsAccount.id();
         accountActionsAPI.sendPostRequestToWithdrawFunds(accountId, amountToWithdraw);
         List<TransactionDto> transactionsForAccount = accountActionsAPI.sendGetRequestForAllTransactionsForAccount(accountId);
         TransactionDto expectedTransaction = transactionsForAccount.stream()
@@ -45,5 +52,16 @@ public class FindTransactionTests extends AuthenticatedBaseTest {
         TransactionDto actualTransaction = transactionDetailsPage.toDto(accountId);
 
         Assertions.assertEquals(expectedTransaction, actualTransaction);
+    }
+
+    private static Stream<Arguments> provideWithdrawalAmountAndAccountType() {
+        return Stream.of(
+                Arguments.of(new BigDecimal("10.00"), AccountTypes.CHECKING, "Small withdrawal"),
+                Arguments.of(new BigDecimal("150.00"), AccountTypes.CHECKING, "Medium withdrawal"),
+                Arguments.of(new BigDecimal("10000.00"), AccountTypes.CHECKING, "Large withdrawal"),
+                Arguments.of(new BigDecimal("10.00"), AccountTypes.SAVINGS, "Small withdrawal"),
+                Arguments.of(new BigDecimal("150.00"), AccountTypes.SAVINGS, "Medium withdrawal"),
+                Arguments.of(new BigDecimal("10000.00"), AccountTypes.SAVINGS, "Large withdrawal")
+        );
     }
 }
