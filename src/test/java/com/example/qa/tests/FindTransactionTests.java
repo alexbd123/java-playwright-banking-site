@@ -4,6 +4,7 @@ import com.example.qa.api.clients.AccountActionsAPI;
 import com.example.qa.api.dtos.AccountDto;
 import com.example.qa.api.dtos.TransactionDto;
 import com.example.qa.tests.base_tests.AuthenticatedBaseTest;
+import com.example.qa.tests.utils.TimeUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,11 +18,13 @@ public class FindTransactionTests extends AuthenticatedBaseTest {
 
     protected static AccountActionsAPI accountActionsAPI;
     protected AccountDto originalCheckingAccount;
+    protected static TimeUtils time;
 
     @BeforeEach
     void initApiClients() {
         accountActionsAPI = new AccountActionsAPI(request);
         originalCheckingAccount = customerContext.getOriginalAccount();
+        time = new TimeUtils();
     }
 
     @Test
@@ -35,17 +38,12 @@ public class FindTransactionTests extends AuthenticatedBaseTest {
                 .findFirst()
                 .orElseThrow();
         int transactionId = expectedTransaction.id();
+        String transactionDate = time.convertUnixToUIDate(expectedTransaction.date());
 
         goTo.findTransactions();
-        findTransactionsPage.findTransactionByDate(accountId, transactionId, getTransactionDate());
+        findTransactionsPage.findTransactionByDate(accountId, transactionId, transactionDate);
         TransactionDto actualTransaction = transactionDetailsPage.toDto(accountId);
 
         Assertions.assertEquals(expectedTransaction, actualTransaction);
-    }
-
-    public String getTransactionDate() {
-        LocalDate date = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
-        return date.format(formatter);
     }
 }

@@ -1,9 +1,9 @@
 package com.example.qa.pages;
 
 import com.example.qa.api.dtos.TransactionDto;
+import com.example.qa.tests.utils.TimeUtils;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
-import com.microsoft.playwright.options.AriaRole;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -12,6 +12,7 @@ import java.time.format.DateTimeFormatter;
 
 public class TransactionDetailsPage {
     private final Page page;
+    private final TimeUtils time;
     private final Locator transactionIdCell;
     private final Locator dateCell;
     private final Locator descriptionCell;
@@ -20,8 +21,9 @@ public class TransactionDetailsPage {
 
     private static final DateTimeFormatter UI_DATE = DateTimeFormatter.ofPattern("MM-dd-yyyy");
 
-    public TransactionDetailsPage(Page page) {
+    public TransactionDetailsPage(Page page, TimeUtils time) {
         this.page = page;
+        this.time = time;
         this.transactionIdCell = page.locator("//td[.//b[normalize-space()='Transaction ID:']]/following-sibling::td[1]");
         this.dateCell = page.locator("//td[.//b[normalize-space()='Date:']]/following-sibling::td[1]");
         this.descriptionCell = page.locator("//td[.//b[normalize-space()='Description:']]/following-sibling::td[1]");
@@ -58,18 +60,10 @@ public class TransactionDetailsPage {
             Integer.parseInt(getTransactionId()),
             accountId,
             getType(),
-            convertTransactionDateToUnix(getDate()),
+            time.convertUIDateToUnix(getDate()),
             getAmount(),
             getDescription()
     );
     }
 
-    public String convertTransactionDateToUnix(String date) {
-        LocalDate dateFormated = LocalDate.parse(date, UI_DATE);
-
-        return String.valueOf(dateFormated
-                .atStartOfDay(ZoneId.systemDefault())
-                .toInstant()
-                .toEpochMilli());
-    }
 }
