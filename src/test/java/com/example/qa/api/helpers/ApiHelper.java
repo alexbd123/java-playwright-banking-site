@@ -1,7 +1,10 @@
 package com.example.qa.api.helpers;
 
 import com.example.qa.api.clients.AccountActionsAPI;
+import com.example.qa.api.clients.CustomerAPI;
 import com.example.qa.api.dtos.AccountDto;
+import com.example.qa.api.dtos.CustomerDto;
+import com.example.qa.api.dtos.User;
 import com.microsoft.playwright.APIRequestContext;
 
 import java.math.BigDecimal;
@@ -9,9 +12,11 @@ import java.math.BigDecimal;
 public class ApiHelper {
 
     private final AccountActionsAPI accountActionsAPI;
+    private final CustomerAPI customerAPI;
 
     public ApiHelper(APIRequestContext request) {
         this.accountActionsAPI = new AccountActionsAPI(request);
+        this.customerAPI = new CustomerAPI(request);
     }
 
     public BigDecimal retrieveAccountBalance(int customerId, int accountId) {
@@ -21,6 +26,22 @@ public class ApiHelper {
                 .map(AccountDto::balance)
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Account not found"));
+    }
+
+    public User extractUserFromResponse(int customerId, String username, String password) {
+        CustomerDto customer = customerAPI.sendGetRequestForCustomerDetails(customerId);
+        return new User(
+                customer.firstName(),
+                customer.lastName(),
+                customer.address().street(),
+                customer.address().city(),
+                customer.address().state(),
+                customer.address().zipCode(),
+                customer.phoneNumber(),
+                customer.ssn(),
+                username,
+                password
+                );
     }
 
 }

@@ -1,7 +1,7 @@
 package com.example.qa.pages;
 
 import com.example.qa.enums.RegistrationFieldErrorMessage;
-import com.example.qa.models.User;
+import com.example.qa.api.dtos.User;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Locator;
 
@@ -215,16 +215,16 @@ public class RegistrationPage {
     }
 
     public void fillRegistrationFieldsWithValidUser(User user) {
-        String password = user.getPassword();
-        fillFirstName(user.getFirstName());
-        fillLastName(user.getLastName());
-        fillAddress(user.getAddress());
-        fillCity(user.getCity());
-        fillState(user.getState());
-        fillZipCode(user.getZipCode());
-        fillPhoneNumber(user.getPhoneNumber());
-        fillSsn(user.getSsn());
-        fillUsername(user.getUsername());
+        String password = user.password();
+        fillFirstName(user.firstName());
+        fillLastName(user.lastName());
+        fillAddress(user.address());
+        fillCity(user.city());
+        fillState(user.state());
+        fillZipCode(user.zipCode());
+        fillPhoneNumber(user.phoneNumber());
+        fillSsn(user.ssn());
+        fillUsername(user.username());
         fillPassword(password);
         fillConfirmPassword(password);
     }

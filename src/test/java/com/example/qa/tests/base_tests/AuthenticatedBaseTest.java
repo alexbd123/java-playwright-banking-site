@@ -3,7 +3,7 @@ package com.example.qa.tests.base_tests;
 import com.example.qa.api.context.CustomerContext;
 import com.example.qa.api.context.CustomerContextBuilder;
 import com.example.qa.config.TestConfig;
-import com.example.qa.models.User;
+import com.example.qa.api.dtos.User;
 import com.example.qa.models.UserFactory;
 import com.example.qa.pages.*;
 import com.microsoft.playwright.*;

@@ -1,4 +1,4 @@
-package com.example.qa.tests.accounts;
+package com.example.qa.tests.ui.accounts;
 
 import com.example.qa.api.clients.AccountActionsAPI;
 import com.example.qa.api.dtos.AccountDto;

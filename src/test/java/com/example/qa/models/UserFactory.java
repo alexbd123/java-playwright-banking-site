@@ -1,6 +1,8 @@
 
 package com.example.qa.models;
 
+import com.example.qa.api.dtos.User;
+
 import java.security.SecureRandom;
 
 public class UserFactory {

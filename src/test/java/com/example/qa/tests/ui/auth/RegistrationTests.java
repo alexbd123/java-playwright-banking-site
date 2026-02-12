@@ -1,4 +1,4 @@
-package com.example.qa.tests.auth;
+package com.example.qa.tests.ui.auth;
 
 import com.example.qa.enums.RegistrationFieldErrorMessage;
 import com.example.qa.tests.base_tests.BaseTest;
@@ -46,7 +46,7 @@ public class RegistrationTests extends BaseTest {
 
     @Test
     void userCannotRegisterIfPasswordsDoNotMatch() {
-        String confirmPasswordNotIdentical = user.getPassword() + "abc";
+        String confirmPasswordNotIdentical = user.password() + "abc";
         registrationPage.fillRegistrationFieldsWithValidUser(user);
         registrationPage.fillConfirmPassword(confirmPasswordNotIdentical);
         registrationPage.clickSubmitRegistrationButton();

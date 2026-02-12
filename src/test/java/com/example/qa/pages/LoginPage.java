@@ -1,6 +1,6 @@
 package com.example.qa.pages;
 
-import com.example.qa.models.User;
+import com.example.qa.api.dtos.User;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Locator;
 
@@ -49,8 +49,8 @@ public class LoginPage {
     }
 
     public void logIn(User user) {
-        usernameInput.fill(user.getUsername());
-        passwordInput.fill(user.getPassword());
+        usernameInput.fill(user.username());
+        passwordInput.fill(user.password());
         logInButton.click();
     }
 }
