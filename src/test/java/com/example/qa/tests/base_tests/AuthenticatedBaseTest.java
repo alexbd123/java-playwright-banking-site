@@ -2,6 +2,7 @@ package com.example.qa.tests.base_tests;
 
 import com.example.qa.api.context.CustomerContext;
 import com.example.qa.api.context.CustomerContextBuilder;
+import com.example.qa.api.helpers.ApiHelper;
 import com.example.qa.config.TestConfig;
 import com.example.qa.api.dtos.User;
 import com.example.qa.models.UserFactory;
@@ -30,6 +31,7 @@ public abstract class AuthenticatedBaseTest {
     protected TransferFundsPage transferFundsPage;
     protected FindTransactionsPage findTransactionsPage;
     protected TransactionDetailsPage transactionDetailsPage;
+    protected static ApiHelper helper;
     protected static APIRequestContext request;
     protected static String requestContextState;
     protected static CustomerContext customerContext;
@@ -41,6 +43,7 @@ public abstract class AuthenticatedBaseTest {
         createAPIRequestContext();
         createAndRegisterUserInTempContext();
         customerContext = new CustomerContextBuilder(request).buildContextFor(user);
+        helper = new ApiHelper(request);
     }
 
     @AfterAll

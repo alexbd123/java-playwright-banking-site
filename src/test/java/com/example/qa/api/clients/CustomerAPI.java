@@ -2,6 +2,8 @@ package com.example.qa.api.clients;
 
 import com.example.qa.api.dtos.CustomerDto;
 import com.example.qa.api.dtos.User;
+import com.example.qa.api.http.HTTPRequests;
+import com.example.qa.api.http.RequestsFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.playwright.APIRequestContext;
 import com.microsoft.playwright.APIResponse;
@@ -9,16 +11,22 @@ import com.microsoft.playwright.APIResponse;
 public class CustomerAPI {
 
     private final APIRequestContext request;
+    private final HTTPRequests http;
+    private final RequestsFactory requestsFactory;
     ObjectMapper mapper = new ObjectMapper();
 
     public CustomerAPI(APIRequestContext request) {
         this.request = request;
+        this.http = new HTTPRequests(request);
+        this.requestsFactory = new RequestsFactory();
     }
 
     //POST requests
     public String sendPostRequestToUpdateCustomer(int customerId, User user) {
-        APIResponse response = request.post(String.format("customers/update/" + buildCustomerArguments(customerId, user),
-                customerId));
+        APIResponse response = http.post(
+                "customers/update",
+                requestsFactory.buildUpdateCustomerRequest(customerId, user)
+        );
         if (!response.ok()) {
             throw new IllegalStateException("Could not update customer " + customerId);
         }

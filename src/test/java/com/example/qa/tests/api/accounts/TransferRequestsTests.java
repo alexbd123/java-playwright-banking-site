@@ -3,8 +3,8 @@ package com.example.qa.tests.api.accounts;
 import com.example.qa.api.clients.AccountActionsAPI;
 import com.example.qa.api.dtos.AccountDto;
 import com.example.qa.api.dtos.TransactionDto;
+import com.example.qa.api.http.ResponsesFactory;
 import com.example.qa.tests.base_tests.AuthenticatedBaseTest;
-import com.example.qa.api.helpers.ApiHelper;
 import com.example.qa.tests.utils.TimeUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -27,8 +27,8 @@ public class TransferRequestsTests extends AuthenticatedBaseTest {
 
     protected AccountActionsAPI accountActionsAPI;
     protected TimeUtils time;
-    protected ApiHelper helper;
     protected AccountDto originalCheckingAccount;
+    protected ResponsesFactory responsesFactory;
     protected int originalAccountId;
     protected int originalCustomerId;
 
@@ -36,8 +36,8 @@ public class TransferRequestsTests extends AuthenticatedBaseTest {
     @BeforeAll
     void initApiAndGetContext() {
         accountActionsAPI = new AccountActionsAPI(request);
-        helper = new ApiHelper(request);
         time = new TimeUtils();
+        responsesFactory = new ResponsesFactory();
         originalCheckingAccount = customerContext.getOriginalAccount();
         originalCustomerId = customerContext.getCustomerId();
         originalAccountId = originalCheckingAccount.id();
@@ -65,11 +65,13 @@ public class TransferRequestsTests extends AuthenticatedBaseTest {
                 transferAmount,
                 TRANSFER_DESCRIPTION);
         List<TransactionDto> transactionsBeforeTransfer = accountActionsAPI.sendGetRequestForAllTransactionsForAccount(toAccountId);
+        String expectedSuccessMessage = responsesFactory.buildSuccessfulTransferResponse(transferAmount, fromAccountId, toAccountId);
 
-        accountActionsAPI.sendPostRequestToTransferFunds(
+        String actualSuccessMessage = accountActionsAPI.sendPostRequestToTransferFunds(
                 fromAccountId,
                 toAccountId,
                 transferAmount);
+        Assertions.assertEquals(expectedSuccessMessage, actualSuccessMessage);
         TransactionDto actualTransaction = determineNewTransactionFromList(transactionsBeforeTransfer, toAccountId);
         BigDecimal actualBalanceAfterTransfer = helper.retrieveAccountBalance(originalCustomerId, toAccountId);
 

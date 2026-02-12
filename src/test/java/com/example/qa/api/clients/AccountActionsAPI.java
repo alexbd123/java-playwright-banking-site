@@ -2,6 +2,8 @@ package com.example.qa.api.clients;
 
 import com.example.qa.api.dtos.AccountDto;
 import com.example.qa.api.dtos.TransactionDto;
+import com.example.qa.api.http.HTTPRequests;
+import com.example.qa.api.http.RequestsFactory;
 import com.example.qa.enums.AccountTypes;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,10 +16,14 @@ import java.util.List;
 public class AccountActionsAPI {
 
     private final APIRequestContext request;
+    private final HTTPRequests http;
+    private final RequestsFactory requestsFactory;
     ObjectMapper mapper = new ObjectMapper();
 
     public AccountActionsAPI(APIRequestContext request) {
         this.request = request;
+        http = new HTTPRequests(request);
+        requestsFactory = new RequestsFactory();
     }
 
     //HTTP methods
@@ -26,12 +32,13 @@ public class AccountActionsAPI {
     public AccountDto createNewAccount(
             Integer customerId,
             AccountTypes accountType,
-            int fromAccountId) {
-        Integer accountTypeInt = (accountType == AccountTypes.CHECKING) ? 0 : 1;
-        APIResponse response = request.post(String.format("createAccount?customerId=%d&newAccountType=%d&fromAccountId=%d",
-                customerId,
-                accountTypeInt,
-                fromAccountId));
+            int fromAccountId
+    ) {
+        APIResponse response = http.post("createAccount",
+                requestsFactory.buildCreateNewAccountRequest(customerId,
+                        accountType,
+                        fromAccountId)
+        );
         if (!response.ok()) {
             throw new IllegalStateException("Account creation failed");
         }
@@ -53,26 +60,29 @@ public class AccountActionsAPI {
     }
 
     public String sendPostRequestToTransferFunds(int fromAccountId, int toAccountId, BigDecimal amount) {
-        APIResponse response = request.post(String.format(
-                "transfer?fromAccountId=%d&toAccountId=%d&amount=%.2f",
-                fromAccountId,
-                toAccountId, amount));
+        APIResponse response = http.post(
+                "transfer",
+                requestsFactory.buildTransferFundsRequests(
+                        fromAccountId,
+                        toAccountId,
+                        amount));
         if (!response.ok()) {
             throw new IllegalStateException("Failed to transfer funds");
         }
         return response.text();
     }
 
-    public void sendPostRequestToWithdrawFunds(int fromAccountId, BigDecimal amount) {
-        APIResponse response = request.post(String.format("withdraw?accountId=%d&amount=%.2f", fromAccountId, amount));
+    public String sendPostRequestToWithdrawFunds(int fromAccountId, BigDecimal amount) {
+        APIResponse response = http.post("withdraw", requestsFactory.buildWithdrawFundsRequest(fromAccountId, amount));
         if (!response.ok()) {
             throw new IllegalStateException("Failed to withdraw funds from account " + fromAccountId);
         }
+        return response.text();
     }
 
     //GET
     public List<AccountDto> sendGetRequestForCustomerAccountsInfo(Integer customerId) {
-        APIResponse response = request.get(String.format("customers/%s/accounts", customerId));
+        APIResponse response = http.get("customers", requestsFactory.buildRetrieveCustomerAccountsRequest(customerId));
         if (!response.ok()) {
             throw new IllegalStateException("Failed to get customer account info");
         }
@@ -114,7 +124,8 @@ public class AccountActionsAPI {
             throw new IllegalStateException("Failed to get all transactions for account " + accountId);
         }
         try {
-            return mapper.readValue(response.text(), new TypeReference<>() {});
+            return mapper.readValue(response.text(), new TypeReference<>() {
+            });
         } catch (Exception e) {
             throw new RuntimeException("Failed to parse all transactions response for account " + accountId, e);
         }

@@ -1,10 +1,9 @@
-package com.example.qa.tests.api.accounts;
+package com.example.qa.tests.api.customers;
 
 import com.example.qa.api.clients.CustomerAPI;
 import com.example.qa.api.dtos.AddressDto;
 import com.example.qa.api.dtos.CustomerDto;
 import com.example.qa.api.dtos.User;
-import com.example.qa.api.helpers.ApiHelper;
 import com.example.qa.models.UserFactory;
 import com.example.qa.tests.base_tests.AuthenticatedBaseTest;
 import org.junit.jupiter.api.Assertions;
@@ -15,13 +14,11 @@ import org.junit.jupiter.api.TestInstance;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class CustomerRequestsTests extends AuthenticatedBaseTest {
     protected CustomerAPI customerApi;
-    protected ApiHelper helper;
     protected int originalCustomerId;
 
     @BeforeAll
     void initApiAndGetContext() {
         customerApi = new CustomerAPI(request);
-        helper = new ApiHelper(request);
         originalCustomerId = customerContext.getCustomerId();
     }
 
@@ -29,8 +26,10 @@ public class CustomerRequestsTests extends AuthenticatedBaseTest {
     void updateCustomerDetails() {
         User newUser = UserFactory.validRandomUser();
         CustomerDto expectedCustomerDto = convertUserToCustomerDto(originalCustomerId, newUser);
+        String expectedSuccessResponse = "Successfully updated customer profile";
 
-        customerApi.sendPostRequestToUpdateCustomer(originalCustomerId, newUser);
+        String actualSuccessResponse = customerApi.sendPostRequestToUpdateCustomer(originalCustomerId, newUser);
+        Assertions.assertEquals(expectedSuccessResponse, actualSuccessResponse);
         CustomerDto actualCustomerDto = customerApi.sendGetRequestForCustomerDetails(originalCustomerId);
 
         Assertions.assertEquals(expectedCustomerDto.firstName(), actualCustomerDto.firstName());
