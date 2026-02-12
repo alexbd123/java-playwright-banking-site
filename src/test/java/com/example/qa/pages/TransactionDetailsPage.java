@@ -16,9 +16,9 @@ public class TransactionDetailsPage {
     private final Locator typeCell;
     private final Locator amountCell;
 
-    public TransactionDetailsPage(Page page, TimeUtils time) {
+    public TransactionDetailsPage(Page page) {
         this.page = page;
-        this.time = time;
+        this.time = new TimeUtils();
         this.transactionIdCell = page.locator("//td[.//b[normalize-space()='Transaction ID:']]/following-sibling::td[1]");
         this.dateCell = page.locator("//td[.//b[normalize-space()='Date:']]/following-sibling::td[1]");
         this.descriptionCell = page.locator("//td[.//b[normalize-space()='Description:']]/following-sibling::td[1]");

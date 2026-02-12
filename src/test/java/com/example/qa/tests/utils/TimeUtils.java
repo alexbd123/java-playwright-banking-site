@@ -27,4 +27,9 @@ public class TimeUtils {
         return newDate.format(UI_DATE);
     }
 
+    public String getUnixDateForApiAssertion() {
+        LocalDate today = LocalDate.now(ZoneId.systemDefault());
+        String todayFormatted = today.format(UI_DATE);
+        return convertUIDateToUnix(todayFormatted);
+    }
 }

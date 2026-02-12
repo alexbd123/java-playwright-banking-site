@@ -6,7 +6,6 @@ import com.example.qa.config.TestConfig;
 import com.example.qa.models.User;
 import com.example.qa.models.UserFactory;
 import com.example.qa.pages.*;
-import com.example.qa.tests.utils.TimeUtils;
 import com.microsoft.playwright.*;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -95,7 +94,7 @@ public abstract class AuthenticatedBaseTest {
         loginPage = new LoginPage(page);
         transferFundsPage = new TransferFundsPage(page);
         findTransactionsPage = new FindTransactionsPage(page);
-        transactionDetailsPage = new TransactionDetailsPage(page, new TimeUtils());
+        transactionDetailsPage = new TransactionDetailsPage(page);
         page.navigate(TestConfig.getBaseUrl());
     }
 

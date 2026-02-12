@@ -1,6 +1,5 @@
 package com.example.qa.pages;
 
-import com.example.qa.api.dtos.AccountDto;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
@@ -34,8 +33,10 @@ public class AccountsOverviewPage {
 
     //Page helpers
 
-    public String convertBigDecimalToExpectedBalanceString(BigDecimal bigDecimal) {
-        return "$" + bigDecimal.setScale(2, RoundingMode.HALF_UP);
+    public String convertBigDecimalToExpectedBalanceString(BigDecimal value) {
+        boolean negative = value.signum() < 0;
+        BigDecimal absValue = value.abs().setScale(2, RoundingMode.HALF_UP);
+        return (negative ? "-$" : "$") + absValue;
     }
 
     public void assertThatBalanceIsVisibleAndAmountIsCorrect(int accountId, BigDecimal expectedBalance) {

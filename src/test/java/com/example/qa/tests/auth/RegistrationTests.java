@@ -1,4 +1,4 @@
-package com.example.qa.tests;
+package com.example.qa.tests.auth;
 
 import com.example.qa.enums.RegistrationFieldErrorMessage;
 import com.example.qa.tests.base_tests.BaseTest;

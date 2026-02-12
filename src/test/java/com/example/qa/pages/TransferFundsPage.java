@@ -2,6 +2,9 @@ package com.example.qa.pages;
 
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
+
+import java.math.BigDecimal;
+
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 public class TransferFundsPage {
@@ -37,27 +40,37 @@ public class TransferFundsPage {
         return toAccountOptions.first().getAttribute("value");
     }
 
-    public void transferFunds(String accountToSendFrom, String accountToSendTo, int amount) {
-        enterAmountIntoAmountInput(String.valueOf(amount));
-        selectAccountToSendFrom(accountToSendFrom);
-        selectAccountToSendTo(accountToSendTo);
+    public Locator getAmountResult() {
+        return amountResult;
+    }
+
+    public void transferFunds(int accountToSendFromId, int accountToSendToId, BigDecimal amount) {
+        enterAmountIntoAmountInput(amount);
+        selectAccountToSendFrom(accountToSendFromId);
+        selectAccountToSendTo(accountToSendToId);
         clickTransferButton();
     }
 
-    public void enterAmountIntoAmountInput(String amount) {
-        amountInput.fill(amount);
-        assertThat(amountInput).hasValue(amount);
+    public void enterAmountIntoAmountInput(BigDecimal amount) {
+        String amountString = amount.toPlainString();
+        amountInput.fill(amountString);
+        assertThat(amountInput).hasValue(amountString);
     }
 
-    public void selectAccountToSendFrom(String account) {
-        fromAccountSelect.selectOption(account);
+    public void selectAccountToSendFrom(int accountId) {
+        fromAccountSelect.selectOption(String.valueOf(accountId));
     }
 
-    public void selectAccountToSendTo(String account) {
-        toAccountSelect.selectOption(account);
+    public void selectAccountToSendTo(int accountId) {
+        toAccountSelect.selectOption(String.valueOf(accountId));
     }
 
     public void clickTransferButton() {
         transferButton.click();
+    }
+
+    public void assertAmountResultIsTransferAmount(BigDecimal amount) {
+        String transferString = amount.toPlainString();
+        assertThat(getAmountResult()).hasText("$" + transferString);
     }
 }

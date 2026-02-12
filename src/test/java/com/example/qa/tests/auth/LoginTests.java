@@ -1,11 +1,11 @@
-package com.example.qa.tests;
+package com.example.qa.tests.auth;
 
 import com.example.qa.tests.base_tests.AuthenticatedBaseTest;
 import org.junit.jupiter.api.Test;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
-public class LoginPageTests extends AuthenticatedBaseTest {
+public class LoginTests extends AuthenticatedBaseTest {
 
     @Test
     void registeredValidUserCanLogIn() {

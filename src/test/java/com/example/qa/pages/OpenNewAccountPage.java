@@ -30,10 +30,6 @@ public class OpenNewAccountPage {
 
     //Expose Locators
 
-    public Locator accountTypeDropdown() {
-        return accountTypeDropdown;
-    }
-
     public Locator selectedAccount() {
         return accountTypeDropdown.locator("option:checked");
     }
@@ -71,19 +67,19 @@ public class OpenNewAccountPage {
         }
     }
 
-    public String openNewAccountAndReturnAccountNumber(AccountTypes accountTypes) {
+    public void openNewAccount(AccountTypes accountTypes, int seedingAccount) {
         selectAccountTypeFromDropdown(accountTypes);
         assertThat(selectedAccount()).hasText(accountTypes.getLabel());
+        selectExistingAccountNumberFromDropdown(seedingAccount);
         clickOpenNewAccountButton();
-        return getAccountNumber();
     }
 
     public void selectAccountTypeFromDropdown(AccountTypes accountType) {
         accountTypeDropdown.selectOption(accountType.getValue());
     }
 
-    public void selectExistingAccountNumberFromDropdown(String accountNumber) {
-        existingAccountDropdown.selectOption(accountNumber);
+    public void selectExistingAccountNumberFromDropdown(int accountNumber) {
+        existingAccountDropdown.selectOption(String.valueOf(accountNumber));
     }
 
     private boolean waitForOpenAccountResult() {
@@ -97,7 +93,7 @@ public class OpenNewAccountPage {
 
     }
 
-    public String getAccountNumber() {
-        return newAccountIdLink.innerText();
+    public int getNewAccountNumber() {
+        return Integer.parseInt(newAccountIdLink.innerText());
     }
 }

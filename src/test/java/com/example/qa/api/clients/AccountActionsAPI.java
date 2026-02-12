@@ -52,7 +52,7 @@ public class AccountActionsAPI {
         }
     }
 
-    public void sendPostRequestToTransferFunds(int fromAccountId, int toAccountId, BigDecimal amount) {
+    public String sendPostRequestToTransferFunds(int fromAccountId, int toAccountId, BigDecimal amount) {
         APIResponse response = request.post(String.format(
                 "transfer?fromAccountId=%d&toAccountId=%d&amount=%.2f",
                 fromAccountId,
@@ -60,6 +60,7 @@ public class AccountActionsAPI {
         if (!response.ok()) {
             throw new IllegalStateException("Failed to transfer funds");
         }
+        return response.text();
     }
 
     public void sendPostRequestToWithdrawFunds(int fromAccountId, BigDecimal amount) {

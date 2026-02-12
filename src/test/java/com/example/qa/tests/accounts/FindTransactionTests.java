@@ -1,4 +1,4 @@
-package com.example.qa.tests;
+package com.example.qa.tests.accounts;
 
 import com.example.qa.api.clients.AccountActionsAPI;
 import com.example.qa.api.dtos.AccountDto;
@@ -8,7 +8,6 @@ import com.example.qa.tests.base_tests.AuthenticatedBaseTest;
 import com.example.qa.tests.utils.TimeUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -23,21 +22,23 @@ public class FindTransactionTests extends AuthenticatedBaseTest {
 
     protected static AccountActionsAPI accountActionsAPI;
     protected AccountDto originalCheckingAccount;
-    protected AccountDto savingsAccount;
     protected static TimeUtils time;
 
     @BeforeAll
-    void initApiClients() {
+    void initApiAndGetContext() {
         accountActionsAPI = new AccountActionsAPI(request);
         originalCheckingAccount = customerContext.getOriginalAccount();
-        savingsAccount = accountActionsAPI.createNewAccount(customerContext.getCustomerId(), AccountTypes.SAVINGS, originalCheckingAccount.id());
         time = new TimeUtils();
     }
 
     @ParameterizedTest(name = "{2} of {0} from {1} account can be found by date")
     @MethodSource("provideWithdrawalAmountAndAccountType")
     void userCanFindWithdrawTransactionsByDate(BigDecimal amountToWithdraw, AccountTypes accountType, String amountDescription) {
-        int accountId = accountType == AccountTypes.CHECKING ? originalCheckingAccount.id() : savingsAccount.id();
+        int accountId = accountType == AccountTypes.CHECKING ? originalCheckingAccount.id() :
+                accountActionsAPI.createNewAccount(
+                customerContext.getCustomerId(),
+                accountType,
+                originalCheckingAccount.id()).id();
         accountActionsAPI.sendPostRequestToWithdrawFunds(accountId, amountToWithdraw);
         List<TransactionDto> transactionsForAccount = accountActionsAPI.sendGetRequestForAllTransactionsForAccount(accountId);
         TransactionDto expectedTransaction = transactionsForAccount.stream()

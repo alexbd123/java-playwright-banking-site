@@ -20,7 +20,7 @@ public class NavigationPage {
         this.page = page;
         this.openNewAccountLink = page.locator("//a[contains(text(),'Open New Account')]");
         this.accountsOverviewLink = page.locator("//a[contains(text(),'Accounts Overview')]");
-        this.transferFundsLink = page.locator("//a[contains(text(),'Transfer Funds')]");
+        this.transferFundsLink = page.locator("//a[contains(text(),'Transfer Funds')]").first();
         this.billPayLink = page.locator("//a[contains(text(),'Bill Pay')]");
         this.findTransactionsLink = page.locator("//a[contains(text(),'Find Transactions')]");
         this.updateContactInfoLink = page.locator("//a[contains(text(),'Update Contact Info')]");
