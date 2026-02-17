@@ -65,4 +65,9 @@ public class NavigationPage {
         requestLoanLink.click();
     }
 
+    public void transactionDetailsPage(int transactionId) {
+        String url = TestConfig.getBaseUrl() + "/transaction.htm?id=" + transactionId;
+        page.navigate(url);
+    }
+
 }

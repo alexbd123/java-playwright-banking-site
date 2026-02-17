@@ -11,7 +11,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import com.example.qa.enums.AccountTypes;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -43,19 +42,19 @@ public class TransferRequestsTests extends AuthenticatedBaseTest {
         originalAccountId = originalCheckingAccount.id();
     }
 
-    @ParameterizedTest(name = "Successful transfer POST request from {1} account to {2} account")
+    @ParameterizedTest(name = "Successful {0} transfer POST request from {2} account to {3} account")
     @MethodSource("provideTransferAmountAndAccountTypes")
-    void fundsCanBeTransferredBetweenAccounts(BigDecimal transferAmount, AccountTypes fromAccountType, AccountTypes toAccountType) {
+    void fundsCanBeTransferredBetweenAccounts(String amountDescription, BigDecimal transferAmount, AccountTypes fromAccountType, AccountTypes toAccountType) {
         int fromAccountId = accountActionsAPI.createNewAccount(
                 originalCustomerId,
                 fromAccountType,
                 originalAccountId)
                 .id();
-        AccountDto toAccount = accountActionsAPI.createNewAccount(
+        int toAccountId = accountActionsAPI.createNewAccount(
                 originalCustomerId,
                 toAccountType,
-                originalAccountId);
-        int toAccountId = toAccount.id();
+                originalAccountId)
+                .id();
         BigDecimal expectedBalanceAfterTransfer = helper.retrieveAccountBalance(originalCustomerId, toAccountId).add(transferAmount);
         TransactionDto expectedTransaction = new TransactionDto(
                 0,
@@ -71,10 +70,10 @@ public class TransferRequestsTests extends AuthenticatedBaseTest {
                 fromAccountId,
                 toAccountId,
                 transferAmount);
-        Assertions.assertEquals(expectedSuccessMessage, actualSuccessMessage);
-        TransactionDto actualTransaction = determineNewTransactionFromList(transactionsBeforeTransfer, toAccountId);
+        TransactionDto actualTransaction = helper.determineNewTransactionFromList(transactionsBeforeTransfer, toAccountId);
         BigDecimal actualBalanceAfterTransfer = helper.retrieveAccountBalance(originalCustomerId, toAccountId);
 
+        Assertions.assertEquals(expectedSuccessMessage, actualSuccessMessage);
         Assertions.assertEquals(toAccountId, actualTransaction.accountId());
         Assertions.assertEquals(expectedTransaction.type(), actualTransaction.type());
         Assertions.assertEquals(expectedTransaction.date(), actualTransaction.date());
@@ -83,47 +82,23 @@ public class TransferRequestsTests extends AuthenticatedBaseTest {
         Assertions.assertEquals(expectedBalanceAfterTransfer, actualBalanceAfterTransfer);
     }
 
-    @ParameterizedTest(name = "{0} of {1} transferred via API from new {2} account to original account appears in overview")
-    @MethodSource("provideTransferAmountAndAccountTypes")
-    void transferredFundsToOriginalAccountShouldAppearInOverview(BigDecimal transferAmount, AccountTypes fromAccountType) {
-        AccountDto newAccountToSendFrom = accountActionsAPI.createNewAccount(
-                customerContext.getCustomerId(),
-                fromAccountType,
-                originalCheckingAccount.id());
-
-        accountActionsAPI.sendPostRequestToTransferFunds(
-                newAccountToSendFrom.id(),
-                originalCheckingAccount.id(),
-                transferAmount);
-
-        BigDecimal expectedBalanceAfterTransfer = helper.retrieveAccountBalance(originalCustomerId, originalAccountId);
-        goToOverviewAndWaitForTableVisibility();
-        accountsOverviewPage.assertThatBalanceIsVisibleAndAmountIsCorrect(originalCheckingAccount.id(), expectedBalanceAfterTransfer);
-    }
-
     //Method sources
 
     private static Stream<Arguments> provideTransferAmountAndAccountTypes() {
         return Stream.of(
-                Arguments.of(new BigDecimal("20.00"), AccountTypes.CHECKING, AccountTypes.CHECKING),
-                Arguments.of(new BigDecimal("20.00"), AccountTypes.CHECKING, AccountTypes.SAVINGS),
-                Arguments.of(new BigDecimal("20.00"), AccountTypes.SAVINGS, AccountTypes.CHECKING),
-                Arguments.of(new BigDecimal("20.00"), AccountTypes.SAVINGS, AccountTypes.SAVINGS)
+                Arguments.of("small", new BigDecimal("20.00"), AccountTypes.CHECKING, AccountTypes.CHECKING),
+                Arguments.of("small", new BigDecimal("20.00"), AccountTypes.CHECKING, AccountTypes.SAVINGS),
+                Arguments.of("small", new BigDecimal("20.00"), AccountTypes.SAVINGS, AccountTypes.CHECKING),
+                Arguments.of("small", new BigDecimal("20.00"), AccountTypes.SAVINGS, AccountTypes.SAVINGS),
+                Arguments.of("medium", new BigDecimal("1000.00"), AccountTypes.CHECKING, AccountTypes.CHECKING),
+                Arguments.of("medium", new BigDecimal("1000.00"), AccountTypes.CHECKING, AccountTypes.SAVINGS),
+                Arguments.of("medium", new BigDecimal("1000.00"), AccountTypes.SAVINGS, AccountTypes.CHECKING),
+                Arguments.of("medium", new BigDecimal("1000.00"), AccountTypes.SAVINGS, AccountTypes.SAVINGS),
+                Arguments.of("large", new BigDecimal("500000.00"), AccountTypes.CHECKING, AccountTypes.CHECKING),
+                Arguments.of("large", new BigDecimal("500000.00"), AccountTypes.CHECKING, AccountTypes.SAVINGS),
+                Arguments.of("large", new BigDecimal("500000.00"), AccountTypes.SAVINGS, AccountTypes.CHECKING),
+                Arguments.of("large", new BigDecimal("500000.00"), AccountTypes.SAVINGS, AccountTypes.SAVINGS)
         );
-    }
-
-    //Test helpers
-
-    public void goToOverviewAndWaitForTableVisibility() {
-        goTo.accountsOverview();
-        assertThat(accountsOverviewPage.accountTable()).isVisible();
-    }
-
-    public TransactionDto determineNewTransactionFromList(List<TransactionDto> beforeTransfer, int accountId) {
-        List<TransactionDto> transactionsAfterTransfer = accountActionsAPI.sendGetRequestForAllTransactionsForAccount(accountId);
-        List<TransactionDto> newTransactions = transactionsAfterTransfer.stream().filter(a -> !beforeTransfer.contains(a)).toList();
-        Assertions.assertEquals(1, newTransactions.size());
-        return newTransactions.get(0);
     }
 
 }

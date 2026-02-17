@@ -4,10 +4,13 @@ import com.example.qa.api.clients.AccountActionsAPI;
 import com.example.qa.api.clients.CustomerAPI;
 import com.example.qa.api.dtos.AccountDto;
 import com.example.qa.api.dtos.CustomerDto;
+import com.example.qa.api.dtos.TransactionDto;
 import com.example.qa.api.dtos.User;
 import com.microsoft.playwright.APIRequestContext;
+import org.junit.jupiter.api.Assertions;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class ApiHelper {
 
@@ -42,6 +45,13 @@ public class ApiHelper {
                 username,
                 password
                 );
+    }
+
+    public TransactionDto determineNewTransactionFromList(List<TransactionDto> beforeTransfer, int accountId) {
+        List<TransactionDto> transactionsAfterTransfer = accountActionsAPI.sendGetRequestForAllTransactionsForAccount(accountId);
+        List<TransactionDto> newTransactions = transactionsAfterTransfer.stream().filter(a -> !beforeTransfer.contains(a)).toList();
+        Assertions.assertEquals(1, newTransactions.size());
+        return newTransactions.get(0);
     }
 
 }

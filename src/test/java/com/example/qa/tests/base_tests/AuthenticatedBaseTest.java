@@ -31,6 +31,7 @@ public abstract class AuthenticatedBaseTest {
     protected TransferFundsPage transferFundsPage;
     protected FindTransactionsPage findTransactionsPage;
     protected TransactionDetailsPage transactionDetailsPage;
+    protected AccountActivityPage accountActivityPage;
     protected static ApiHelper helper;
     protected static APIRequestContext request;
     protected static String requestContextState;
@@ -98,6 +99,7 @@ public abstract class AuthenticatedBaseTest {
         transferFundsPage = new TransferFundsPage(page);
         findTransactionsPage = new FindTransactionsPage(page);
         transactionDetailsPage = new TransactionDetailsPage(page);
+        accountActivityPage = new AccountActivityPage(page);
         page.navigate(TestConfig.getBaseUrl());
     }
 

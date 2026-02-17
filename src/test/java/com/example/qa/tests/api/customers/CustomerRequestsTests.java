@@ -25,18 +25,18 @@ public class CustomerRequestsTests extends AuthenticatedBaseTest {
     @Test
     void updateCustomerDetails() {
         User newUser = UserFactory.validRandomUser();
-        CustomerDto expectedCustomerDto = convertUserToCustomerDto(originalCustomerId, newUser);
+        CustomerDto expectedCustomer = convertUserToCustomerDto(originalCustomerId, newUser);
         String expectedSuccessResponse = "Successfully updated customer profile";
 
         String actualSuccessResponse = customerApi.sendPostRequestToUpdateCustomer(originalCustomerId, newUser);
         Assertions.assertEquals(expectedSuccessResponse, actualSuccessResponse);
-        CustomerDto actualCustomerDto = customerApi.sendGetRequestForCustomerDetails(originalCustomerId);
+        CustomerDto actualCustomer = customerApi.sendGetRequestForCustomerDetails(originalCustomerId);
 
-        Assertions.assertEquals(expectedCustomerDto.firstName(), actualCustomerDto.firstName());
-        Assertions.assertEquals(expectedCustomerDto.lastName(), actualCustomerDto.lastName());
-        Assertions.assertEquals(expectedCustomerDto.address(), actualCustomerDto.address());
-        Assertions.assertEquals(expectedCustomerDto.phoneNumber(), actualCustomerDto.phoneNumber());
-        Assertions.assertEquals(expectedCustomerDto.ssn(), actualCustomerDto.ssn());
+        Assertions.assertEquals(expectedCustomer.firstName(), actualCustomer.firstName());
+        Assertions.assertEquals(expectedCustomer.lastName(), actualCustomer.lastName());
+        Assertions.assertEquals(expectedCustomer.address(), actualCustomer.address());
+        Assertions.assertEquals(expectedCustomer.phoneNumber(), actualCustomer.phoneNumber());
+        Assertions.assertEquals(expectedCustomer.ssn(), actualCustomer.ssn());
     }
 
     //Helpers

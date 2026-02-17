@@ -31,6 +31,12 @@ public class AccountsOverviewPage {
         return accountNumberLinkInAccountTable(accountNumber).locator("xpath=ancestor::td/following-sibling::td[1]");
     }
 
+    //Actions
+
+    public void clickAccountNumberLinkInAccountTable(int accountNumber) {
+        accountNumberLinkInAccountTable(String.valueOf(accountNumber)).click();
+    }
+
     //Page helpers
 
     public String convertBigDecimalToExpectedBalanceString(BigDecimal value) {
