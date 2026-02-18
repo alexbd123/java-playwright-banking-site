@@ -27,14 +27,15 @@ public class TransactionDataFactory {
             BigDecimal amountToWithdraw,
             AccountTypes accountType,
             int customerId,
-            AccountDto originalCheckingAccount
+            int originalCheckingAccountId
     ) {
         //Get correct account ID
-        int accountId = accountType == AccountTypes.CHECKING ? originalCheckingAccount.id() :
+        int accountId = accountType == AccountTypes.CHECKING ? originalCheckingAccountId :
                 accountActionsAPI.createNewAccount(
                         customerId,
                         accountType,
-                        originalCheckingAccount.id()).id();
+                        originalCheckingAccountId
+                ).id();
 
         //Withdrawal via API
         accountActionsAPI.sendPostRequestToWithdrawFunds(accountId, amountToWithdraw);

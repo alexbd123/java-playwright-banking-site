@@ -4,6 +4,9 @@ import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 
 import java.math.BigDecimal;
+import java.util.Objects;
+
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 public class FindTransactionsPage {
 
@@ -31,6 +34,21 @@ public class FindTransactionsPage {
         this.findByDateRangeButton = page.locator("#findDateByRange");
         this.findByAmountInput = page.locator("#amount");
         this.findByAmountButton = page.locator("#findByAmount");
+    }
+
+    //Expose Locators
+
+    public Locator getTransactionLink(int transactionId) {
+        String selector = String.format("a[href*='transaction.htm?id=%d']", transactionId);
+        return page.locator(selector);
+    }
+
+    public Locator getDebitCell(int transactionId) {
+        return getTransactionLink(transactionId).locator("xpath=../following-sibling::td[1]");
+    }
+
+    public Locator getCreditCell(int transactionId) {
+        return getTransactionLink(transactionId).locator("xpath=../following-sibling::td[2]");
     }
 
     public void selectAccountId(int accountId) {
@@ -62,22 +80,31 @@ public class FindTransactionsPage {
     }
 
     public void clickTransactionLink(int transactionId) {
-        String selector = String.format("a[href*='transaction.htm?id=%d']", transactionId);
-        page.locator(selector).click();
+        Locator transactionLink = getTransactionLink(transactionId);
+        transactionLink.click();
     }
 
-    public void findTransactionByDate(int accountId, int transactionId, String transactionDate) {
+    public void findTransactionByDate(int accountId, String transactionDate) {
         selectAccountId(accountId);
         enterTransactionDate(transactionDate);
         clickFindByDateButton();
-        clickTransactionLink(transactionId);
     }
 
-    public void findTransactionByAmount(int accountId, int transactionId, BigDecimal amount) {
+    public void findTransactionByAmount(int accountId, BigDecimal amount) {
         selectAccountId(accountId);
         enterTransactionAmount(amount);
         clickFindByAmountButton();
+    }
+
+    public void goToTransactionDetails(int transactionId) {
         clickTransactionLink(transactionId);
+    }
+
+    public void verifyTransactionTypeAndAmountInTable(String transactionType, int transactionId, BigDecimal amount) {
+        Locator transactionTypeCell = Objects.equals(transactionType, "Debit")
+                ? getDebitCell(transactionId)
+                : getCreditCell(transactionId);
+        assertThat(transactionTypeCell).hasText("$" + amount);
     }
 
 }
