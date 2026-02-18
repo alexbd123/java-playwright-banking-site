@@ -37,8 +37,8 @@ public class TransferRequestsTests extends AuthenticatedBaseTest {
         accountActionsAPI = new AccountActionsAPI(request);
         time = new TimeUtils();
         responsesFactory = new ResponsesFactory();
-        originalCheckingAccount = customerContext.getOriginalAccount();
-        originalCustomerId = customerContext.getCustomerId();
+        originalCheckingAccount = customerContext.originalAccount();
+        originalCustomerId = customerContext.customerId();
         originalAccountId = originalCheckingAccount.id();
     }
 

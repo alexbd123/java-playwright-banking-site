@@ -29,9 +29,9 @@ public class TransfersTests extends AuthenticatedBaseTest {
     @BeforeAll
     void initApiAndGetContext() {
         accountActionsAPI = new AccountActionsAPI(request);
-        originalCheckingAccount = customerContext.getOriginalAccount();
+        originalCheckingAccount = customerContext.originalAccount();
         originalAccountId = originalCheckingAccount.id();
-        originalCustomerId = customerContext.getCustomerId();
+        originalCustomerId = customerContext.customerId();
     }
 
     @ParameterizedTest(name = "User can transfer {0} to {1} account")

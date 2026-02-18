@@ -28,7 +28,7 @@ public class OpenNewAccountTests extends AuthenticatedBaseTest {
     @BeforeAll
     void initApiClients() {
         accountActionsAPI = new AccountActionsAPI(request);
-        originalCheckingAccount = customerContext.getOriginalAccount();
+        originalCheckingAccount = customerContext.originalAccount();
         originalCheckingAccountId = originalCheckingAccount.id();
     }
 
@@ -47,7 +47,7 @@ public class OpenNewAccountTests extends AuthenticatedBaseTest {
     @MethodSource("provideAccountTypeTestData")
     void userCanUseNewAccountToOpenNewAccount(AccountTypes newAccountType1, AccountTypes newAccountType2) {
         AccountDto newAccount = accountActionsAPI.createNewAccount(
-                customerContext.getCustomerId(),
+                customerContext.customerId(),
                 newAccountType1,
                 originalCheckingAccountId);
         int newAccountId = newAccount.id();

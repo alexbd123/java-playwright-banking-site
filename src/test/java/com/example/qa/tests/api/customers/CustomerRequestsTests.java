@@ -19,7 +19,7 @@ public class CustomerRequestsTests extends AuthenticatedBaseTest {
     @BeforeAll
     void initApiAndGetContext() {
         customerApi = new CustomerAPI(request);
-        originalCustomerId = customerContext.getCustomerId();
+        originalCustomerId = customerContext.customerId();
     }
 
     @Test
