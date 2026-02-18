@@ -49,9 +49,9 @@ public class ApiHelper {
     public TransactionDto determineNewTransactionFromList(List<TransactionDto> beforeTransfer, int accountId) {
         List<TransactionDto> transactionsAfterTransfer = accountActionsAPI.sendGetRequestForAllTransactionsForAccount(accountId);
         List<TransactionDto> newTransactions = transactionsAfterTransfer.stream().filter(a -> !beforeTransfer.contains(a)).toList();
-        if (transactionsAfterTransfer.size() == 1) {
+        if (newTransactions.size() == 1) {
             return newTransactions.get(0);
-        } else if (transactionsAfterTransfer.isEmpty()) {
+        } else if (newTransactions.isEmpty()) {
             throw new RuntimeException("There are no newly created transactions for account " + accountId);
         }
         throw new RuntimeException (
