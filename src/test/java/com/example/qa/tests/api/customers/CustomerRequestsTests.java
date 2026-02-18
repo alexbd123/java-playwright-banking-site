@@ -4,7 +4,7 @@ import com.example.qa.api.clients.CustomerAPI;
 import com.example.qa.api.dtos.AddressDto;
 import com.example.qa.api.dtos.CustomerDto;
 import com.example.qa.api.dtos.User;
-import com.example.qa.models.UserFactory;
+import com.example.qa.api.context.builders.UserFactory;
 import com.example.qa.tests.base_tests.AuthenticatedBaseTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;

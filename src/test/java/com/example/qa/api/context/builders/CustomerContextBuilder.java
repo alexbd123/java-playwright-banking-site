@@ -1,9 +1,9 @@
-package com.example.qa.api.context;
+package com.example.qa.api.context.builders;
 
 import com.example.qa.api.clients.AccountActionsAPI;
 import com.example.qa.api.clients.CustomerAPI;
+import com.example.qa.api.context.CustomerContext;
 import com.example.qa.api.dtos.AccountDto;
-import com.example.qa.api.dtos.CustomerDto;
 import com.example.qa.api.dtos.User;
 import com.microsoft.playwright.APIRequestContext;
 

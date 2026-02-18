@@ -7,7 +7,7 @@ public class CustomerContext {
     private final int customerId;
     private final AccountDto originalAccount;
     
-    CustomerContext (int customerId, AccountDto originalAccount) {
+    public CustomerContext (int customerId, AccountDto originalAccount) {
         this.customerId = customerId;
         this.originalAccount = originalAccount;
     }

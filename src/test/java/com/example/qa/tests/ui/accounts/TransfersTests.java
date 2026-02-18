@@ -43,7 +43,7 @@ public class TransfersTests extends AuthenticatedBaseTest {
                 accountType,
                 originalCheckingAccount.id());
         int newAccountId = newAccountToReceiveFunds.id();
-        BigDecimal accountBalance = helper.retrieveAccountBalance(originalCustomerId, newAccountId);
+        BigDecimal accountBalance = beHelper.retrieveAccountBalance(originalCustomerId, newAccountId);
 
         //Act: navigate to the Transfer Funds page, transfer to new account via UI, and verify correct UI message after transaction
         goTo.transferFunds();
@@ -65,7 +65,7 @@ public class TransfersTests extends AuthenticatedBaseTest {
                 accountType,
                 originalCheckingAccount.id());
         int newAccountId = newAccountToSendFundsFrom.id();
-        BigDecimal accountBalance = helper.retrieveAccountBalance(originalCustomerId, newAccountId);
+        BigDecimal accountBalance = beHelper.retrieveAccountBalance(originalCustomerId, newAccountId);
 
         //Act: navigate to the Transfer Funds page, transfer to new account via UI, and verify correct UI message after transaction
         goTo.transferFunds();
@@ -89,7 +89,7 @@ public class TransfersTests extends AuthenticatedBaseTest {
         int newAccountId = newAccountToReceiveFunds.id();
         List<TransactionDto> transactionsBeforeTransfer = accountActionsAPI.sendGetRequestForAllTransactionsForAccount(newAccountId);
         accountActionsAPI.sendPostRequestToTransferFunds(originalAccountId, newAccountId, transferAmount);
-        TransactionDto expectedTransaction = helper.determineNewTransactionFromList(transactionsBeforeTransfer, newAccountId);
+        TransactionDto expectedTransaction = beHelper.determineNewTransactionFromList(transactionsBeforeTransfer, newAccountId);
 
         //Act: Navigate to the transaction details page and grab actual transaction from the UI
         goTo.transactionDetailsPage(expectedTransaction.id());
@@ -110,7 +110,7 @@ public class TransfersTests extends AuthenticatedBaseTest {
         int newAccountId = newAccountToTransferFrom.id();
         List<TransactionDto> transactionsBeforeTransfer = accountActionsAPI.sendGetRequestForAllTransactionsForAccount(newAccountId);
         accountActionsAPI.sendPostRequestToTransferFunds(newAccountId, originalAccountId , transferAmount);
-        TransactionDto expectedTransaction = helper.determineNewTransactionFromList(transactionsBeforeTransfer, newAccountId);
+        TransactionDto expectedTransaction = beHelper.determineNewTransactionFromList(transactionsBeforeTransfer, newAccountId);
 
         //Act: Navigate to the transaction details page and grab actual transaction from the UI
         goTo.transactionDetailsPage(expectedTransaction.id());

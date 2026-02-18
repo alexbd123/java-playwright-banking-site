@@ -1,5 +1,5 @@
 
-package com.example.qa.models;
+package com.example.qa.api.context.builders;
 
 import com.example.qa.api.dtos.User;
 

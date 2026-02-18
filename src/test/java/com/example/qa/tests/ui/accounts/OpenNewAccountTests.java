@@ -39,7 +39,7 @@ public class OpenNewAccountTests extends AuthenticatedBaseTest {
         openNewAccountPage.openNewAccount(accountType, originalCheckingAccountId);
         assertThat(openNewAccountPage.successfullyOpenedAccountMessage()).isVisible();
         int newAccountId = openNewAccountPage.getNewAccountNumber();
-        goToOverviewAndWaitForTableVisibility();
+        feHelper.goToOverviewAndWaitForTableVisibility();
         accountsOverviewPage.assertThatBalanceIsVisibleAndAmountIsCorrect(newAccountId, DEFAULT_BALANCE);
     }
 
@@ -56,7 +56,7 @@ public class OpenNewAccountTests extends AuthenticatedBaseTest {
         openNewAccountPage.openNewAccount(newAccountType2, newAccountId);
         assertThat(openNewAccountPage.successfullyOpenedAccountMessage()).isVisible();
         int accountCreatedFromNewAccountId = openNewAccountPage.getNewAccountNumber();
-        goToOverviewAndWaitForTableVisibility();
+        feHelper.goToOverviewAndWaitForTableVisibility();
 
         accountsOverviewPage.assertThatBalanceIsVisibleAndAmountIsCorrect(accountCreatedFromNewAccountId, DEFAULT_BALANCE);
     }
@@ -70,13 +70,6 @@ public class OpenNewAccountTests extends AuthenticatedBaseTest {
                 Arguments.of(AccountTypes.SAVINGS, AccountTypes.CHECKING),
                 Arguments.of(AccountTypes.SAVINGS, AccountTypes.SAVINGS)
         );
-    }
-
-    //Test helpers
-
-    public void goToOverviewAndWaitForTableVisibility() {
-        goTo.accountsOverview();
-        assertThat(accountsOverviewPage.accountTable()).isVisible();
     }
 
 }

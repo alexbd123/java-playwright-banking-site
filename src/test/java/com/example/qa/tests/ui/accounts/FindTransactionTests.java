@@ -31,9 +31,10 @@ public class FindTransactionTests extends AuthenticatedBaseTest {
         time = new TimeUtils();
     }
 
-    @ParameterizedTest(name = "{2} of {0} from {1} account can be found by date")
+    @ParameterizedTest(name = "{0} of {1} from {2} account can be found by date")
     @MethodSource("provideWithdrawalAmountAndAccountType")
-    void userCanFindWithdrawTransactionsByDate(BigDecimal amountToWithdraw, AccountTypes accountType, String amountDescription) {
+    void userCanFindWithdrawalByDate(String amountDescription, BigDecimal amountToWithdraw, AccountTypes accountType) {
+        //Arrange: Create correct account type, withdraw funds via API, set up expected transaction dto
         int accountId = accountType == AccountTypes.CHECKING ? originalCheckingAccount.id() :
                 accountActionsAPI.createNewAccount(
                 customerContext.getCustomerId(),
@@ -48,21 +49,49 @@ public class FindTransactionTests extends AuthenticatedBaseTest {
         int transactionId = expectedTransaction.id();
         String transactionDate = time.convertUnixToUIDate(expectedTransaction.date());
 
+        //Act: Use UI to find transaction by date
         goTo.findTransactions();
         findTransactionsPage.findTransactionByDate(accountId, transactionId, transactionDate);
         TransactionDto actualTransaction = transactionDetailsPage.toDto(accountId);
 
+        //Assert: Verify actual transaction from UI matches expected transaction dto
+        Assertions.assertEquals(expectedTransaction, actualTransaction);
+    }
+
+    @ParameterizedTest(name = "{0} of {1} from {2} account can be found by amount")
+    @MethodSource("provideWithdrawalAmountAndAccountType")
+    void userCanFindWithdrawalByAmount(String amountDescription, BigDecimal amountToWithdraw, AccountTypes accountType) {
+        //Arrange: Create correct account type, withdraw funds via API, set up expected transaction dto
+        int accountId = accountType == AccountTypes.CHECKING ? originalCheckingAccount.id() :
+                accountActionsAPI.createNewAccount(
+                        customerContext.getCustomerId(),
+                        accountType,
+                        originalCheckingAccount.id()).id();
+        accountActionsAPI.sendPostRequestToWithdrawFunds(accountId, amountToWithdraw);
+        List<TransactionDto> transactionsForAccount = accountActionsAPI.sendGetRequestForAllTransactionsForAccount(accountId);
+        TransactionDto expectedTransaction = transactionsForAccount.stream()
+                .filter(t -> t.amount().equals(amountToWithdraw))
+                .findFirst()
+                .orElseThrow();
+        int transactionId = expectedTransaction.id();
+
+        //Act: Use UI to find transaction by amount
+        goTo.findTransactions();
+        findTransactionsPage.findTransactionByAmount(accountId, transactionId, amountToWithdraw);
+        TransactionDto actualTransaction = transactionDetailsPage.toDto(accountId);
+
+        //Assert: Verify actual transaction from UI matches expected transaction dto
         Assertions.assertEquals(expectedTransaction, actualTransaction);
     }
 
     private static Stream<Arguments> provideWithdrawalAmountAndAccountType() {
         return Stream.of(
-                Arguments.of(new BigDecimal("10.00"), AccountTypes.CHECKING, "Small withdrawal"),
-                Arguments.of(new BigDecimal("150.00"), AccountTypes.CHECKING, "Medium withdrawal"),
-                Arguments.of(new BigDecimal("10000.00"), AccountTypes.CHECKING, "Large withdrawal"),
-                Arguments.of(new BigDecimal("10.00"), AccountTypes.SAVINGS, "Small withdrawal"),
-                Arguments.of(new BigDecimal("150.00"), AccountTypes.SAVINGS, "Medium withdrawal"),
-                Arguments.of(new BigDecimal("10000.00"), AccountTypes.SAVINGS, "Large withdrawal")
+                Arguments.of( "Small withdrawal", new BigDecimal("10.00"), AccountTypes.CHECKING),
+                Arguments.of("Medium withdrawal", new BigDecimal("150.00"), AccountTypes.CHECKING),
+                Arguments.of("Large withdrawal", new BigDecimal("10000.00"), AccountTypes.CHECKING),
+                Arguments.of("Small withdrawal", new BigDecimal("10.00"), AccountTypes.SAVINGS),
+                Arguments.of("Medium withdrawal", new BigDecimal("150.00"), AccountTypes.SAVINGS),
+                Arguments.of("Large withdrawal", new BigDecimal("10000.00"), AccountTypes.SAVINGS)
         );
     }
 }

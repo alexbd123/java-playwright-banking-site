@@ -3,6 +3,8 @@ package com.example.qa.pages;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 
+import java.math.BigDecimal;
+
 public class FindTransactionsPage {
 
     private final Page page;
@@ -51,6 +53,14 @@ public class FindTransactionsPage {
         findByDateButton.click();
     }
 
+    public void clickFindByAmountButton() {
+        findByAmountButton.click();
+    }
+
+    public void enterTransactionAmount(BigDecimal amount) {
+        findByAmountInput.fill(String.valueOf(amount));
+    }
+
     public void clickTransactionLink(int transactionId) {
         String selector = String.format("a[href*='transaction.htm?id=%d']", transactionId);
         page.locator(selector).click();
@@ -60,6 +70,13 @@ public class FindTransactionsPage {
         selectAccountId(accountId);
         enterTransactionDate(transactionDate);
         clickFindByDateButton();
+        clickTransactionLink(transactionId);
+    }
+
+    public void findTransactionByAmount(int accountId, int transactionId, BigDecimal amount) {
+        selectAccountId(accountId);
+        enterTransactionAmount(amount);
+        clickFindByAmountButton();
         clickTransactionLink(transactionId);
     }
 

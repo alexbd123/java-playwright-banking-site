@@ -1,28 +1,30 @@
 package com.example.qa.tests.base_tests;
 
 import com.example.qa.api.context.CustomerContext;
-import com.example.qa.api.context.CustomerContextBuilder;
+import com.example.qa.api.context.builders.CustomerContextBuilder;
 import com.example.qa.api.helpers.ApiHelper;
+import com.example.qa.tests.ui.TestHelper;
 import com.example.qa.config.TestConfig;
 import com.example.qa.api.dtos.User;
-import com.example.qa.models.UserFactory;
+import com.example.qa.api.context.builders.UserFactory;
 import com.example.qa.pages.*;
 import com.microsoft.playwright.*;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class AuthenticatedBaseTest {
 
-    protected static Playwright playwright;
-    protected static Browser browser;
+    protected Playwright playwright;
+    protected Browser browser;
+
     protected BrowserContext context;
     protected Page page;
-    protected static User user;
+
+    protected User user;
+
     protected OpenNewAccountPage openNewAccountPage;
     protected NavigationPage goTo;
     protected RegistrationPage registrationPage;
@@ -32,23 +34,33 @@ public abstract class AuthenticatedBaseTest {
     protected FindTransactionsPage findTransactionsPage;
     protected TransactionDetailsPage transactionDetailsPage;
     protected AccountActivityPage accountActivityPage;
-    protected static ApiHelper helper;
-    protected static APIRequestContext request;
-    protected static String requestContextState;
-    protected static CustomerContext customerContext;
+
+    protected ApiHelper beHelper;
+    protected TestHelper feHelper;
+    protected APIRequestContext request;
+    protected String requestContextState;
+    protected CustomerContext customerContext;
 
     @BeforeAll
-    static void globalSetUp() {
+    void globalSetUp() {
+        // Playwright + browser shared per class
         playwright = Playwright.create();
-        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(TestConfig.getHeadless()));
+        browser = playwright.chromium().launch(
+                new BrowserType.LaunchOptions().setHeadless(TestConfig.getHeadless())
+        );
+
+        // API
         createAPIRequestContext();
         createAndRegisterUserInTempContext();
+
+        // Customer context + api helper
+        beHelper = new ApiHelper(request);
         customerContext = new CustomerContextBuilder(request).buildContextFor(user);
-        helper = new ApiHelper(request);
     }
 
     @AfterAll
-    static void globalTearDown() {
+    void globalTearDown() {
+        if (request != null) request.dispose();
         if (browser != null) browser.close();
         if (playwright != null) playwright.close();
     }
@@ -56,7 +68,8 @@ public abstract class AuthenticatedBaseTest {
     @BeforeEach
     void setUp() {
         createContextAndPage();
-        navigateToSiteAndInitialisePages();
+        initPages();
+        page.navigate(TestConfig.getBaseUrl());
     }
 
     @AfterEach
@@ -64,33 +77,42 @@ public abstract class AuthenticatedBaseTest {
         if (context != null) context.close();
     }
 
-    static void createAPIRequestContext() {
+    void createAPIRequestContext() {
         Map<String, String> headers = new HashMap<>();
         headers.put("accept", "application/json");
-        request = playwright.request().newContext(new APIRequest.NewContextOptions()
-                .setBaseURL(TestConfig.getApiBaseUrl())
-                .setExtraHTTPHeaders(headers));
+
+        request = playwright.request().newContext(
+                new APIRequest.NewContextOptions()
+                        .setBaseURL(TestConfig.getApiBaseUrl())
+                        .setExtraHTTPHeaders(headers)
+        );
     }
 
-    static void createAndRegisterUserInTempContext() {
+    void createAndRegisterUserInTempContext() {
         BrowserContext tempCtx = browser.newContext();
         Page tempPage = tempCtx.newPage();
+
         RegistrationPage tempRegistration = new RegistrationPage(tempPage);
         NavigationPage tempGoTo = new NavigationPage(tempPage);
+
         tempPage.navigate(TestConfig.getBaseUrl());
         tempGoTo.registrationPage();
+
         user = UserFactory.validRandomUser();
         tempRegistration.registerValidUserAndLogInOrOut(user, true);
+
         requestContextState = tempCtx.storageState();
         tempCtx.close();
     }
 
-    protected void createContextAndPage() {
-        context = browser.newContext(new Browser.NewContextOptions().setStorageState(requestContextState));
+    void createContextAndPage() {
+        context = browser.newContext(
+                new Browser.NewContextOptions().setStorageState(requestContextState)
+        );
         page = context.newPage();
     }
 
-    protected void navigateToSiteAndInitialisePages() {
+    void initPages() {
         goTo = new NavigationPage(page);
         registrationPage = new RegistrationPage(page);
         openNewAccountPage = new OpenNewAccountPage(page);
@@ -100,7 +122,6 @@ public abstract class AuthenticatedBaseTest {
         findTransactionsPage = new FindTransactionsPage(page);
         transactionDetailsPage = new TransactionDetailsPage(page);
         accountActivityPage = new AccountActivityPage(page);
-        page.navigate(TestConfig.getBaseUrl());
+        feHelper = new TestHelper(page);
     }
-
 }

@@ -45,6 +45,7 @@ public class TransferRequestsTests extends AuthenticatedBaseTest {
     @ParameterizedTest(name = "Successful {0} transfer POST request from {2} account to {3} account")
     @MethodSource("provideTransferAmountAndAccountTypes")
     void fundsCanBeTransferredBetweenAccounts(String amountDescription, BigDecimal transferAmount, AccountTypes fromAccountType, AccountTypes toAccountType) {
+        //Arrange: Create two accounts for transfer, get pre-transfer expected balance and transfer dto
         int fromAccountId = accountActionsAPI.createNewAccount(
                 originalCustomerId,
                 fromAccountType,
@@ -55,7 +56,7 @@ public class TransferRequestsTests extends AuthenticatedBaseTest {
                 toAccountType,
                 originalAccountId)
                 .id();
-        BigDecimal expectedBalanceAfterTransfer = helper.retrieveAccountBalance(originalCustomerId, toAccountId).add(transferAmount);
+        BigDecimal expectedBalanceAfterTransfer = beHelper.retrieveAccountBalance(originalCustomerId, toAccountId).add(transferAmount);
         TransactionDto expectedTransaction = new TransactionDto(
                 0,
                 toAccountId,
@@ -66,13 +67,15 @@ public class TransferRequestsTests extends AuthenticatedBaseTest {
         List<TransactionDto> transactionsBeforeTransfer = accountActionsAPI.sendGetRequestForAllTransactionsForAccount(toAccountId);
         String expectedSuccessMessage = responsesFactory.buildSuccessfulTransferResponse(transferAmount, fromAccountId, toAccountId);
 
+        //Act: Transfer funds between accounts, retrieve actual transfer dto and actual balance
         String actualSuccessMessage = accountActionsAPI.sendPostRequestToTransferFunds(
                 fromAccountId,
                 toAccountId,
                 transferAmount);
-        TransactionDto actualTransaction = helper.determineNewTransactionFromList(transactionsBeforeTransfer, toAccountId);
-        BigDecimal actualBalanceAfterTransfer = helper.retrieveAccountBalance(originalCustomerId, toAccountId);
+        TransactionDto actualTransaction = beHelper.determineNewTransactionFromList(transactionsBeforeTransfer, toAccountId);
+        BigDecimal actualBalanceAfterTransfer = beHelper.retrieveAccountBalance(originalCustomerId, toAccountId);
 
+        //Assert: Verify equality between expected and actual success message, transfer dtos, and balances
         Assertions.assertEquals(expectedSuccessMessage, actualSuccessMessage);
         Assertions.assertEquals(toAccountId, actualTransaction.accountId());
         Assertions.assertEquals(expectedTransaction.type(), actualTransaction.type());
