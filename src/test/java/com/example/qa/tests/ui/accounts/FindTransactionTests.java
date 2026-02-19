@@ -4,9 +4,10 @@ import com.example.qa.api.clients.AccountActionsAPI;
 import com.example.qa.api.dtos.TransactionDto;
 import com.example.qa.enums.AccountTypes;
 import com.example.qa.tests.base_tests.AuthenticatedBaseTest;
-import com.example.qa.tests.test_data.TransactionDataFactory;
-import com.example.qa.tests.test_data.TransferTransactionData;
-import com.example.qa.tests.test_data.WithdrawalTransactionData;
+import com.example.qa.tests.test_data.test_data_factories.TransfersDataFactory;
+import com.example.qa.tests.test_data.test_data_factories.WithdrawalsDataFactory;
+import com.example.qa.tests.test_data.test_data_records.TransferTransactionData;
+import com.example.qa.tests.test_data.test_data_records.WithdrawalTransactionData;
 import com.example.qa.tests.utils.TimeUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -25,7 +26,8 @@ public class FindTransactionTests extends AuthenticatedBaseTest {
     protected int originalAccountId;
     protected int originalCustomerId;
     protected TimeUtils time;
-    protected TransactionDataFactory transactionDataFactory;
+    protected TransfersDataFactory transfersDataFactory;
+    protected WithdrawalsDataFactory withdrawalsDataFactory;
 
     @BeforeAll
     void initApiAndGetContext() {
@@ -33,7 +35,8 @@ public class FindTransactionTests extends AuthenticatedBaseTest {
         originalAccountId = customerContext.originalAccount().id();
         originalCustomerId = customerContext.customerId();
         time = new TimeUtils();
-        transactionDataFactory = new TransactionDataFactory(request);
+        transfersDataFactory = new TransfersDataFactory(request);
+        withdrawalsDataFactory = new WithdrawalsDataFactory(request);
     }
 
     //Find withdrawals
@@ -42,7 +45,7 @@ public class FindTransactionTests extends AuthenticatedBaseTest {
     @MethodSource("provideAmountAndAccountType")
     void userCanFindWithdrawalByDate(String amountDescription, BigDecimal amountToWithdraw, AccountTypes accountType) {
         //Arrange: Use test data class to create test data
-        WithdrawalTransactionData testData = transactionDataFactory.buildTestDataForWithdrawal(
+        WithdrawalTransactionData testData = withdrawalsDataFactory.buildTestDataForWithdrawalFromNewAccount(
                 amountToWithdraw,
                 accountType,
                 originalCustomerId,
@@ -64,7 +67,7 @@ public class FindTransactionTests extends AuthenticatedBaseTest {
     @MethodSource("provideAmountAndAccountType")
     void userCanFindWithdrawalByAmount(String amountDescription, BigDecimal amountToWithdraw, AccountTypes accountType) {
         //Arrange: Use test data class to create test data
-        WithdrawalTransactionData testData = transactionDataFactory.buildTestDataForWithdrawal(
+        WithdrawalTransactionData testData = withdrawalsDataFactory.buildTestDataForWithdrawalFromNewAccount(
                 amountToWithdraw,
                 accountType,
                 originalCustomerId,
@@ -88,48 +91,88 @@ public class FindTransactionTests extends AuthenticatedBaseTest {
     @MethodSource("provideAmountAndAccountType")
     void userCanFindTransferToByAmount(String amountDescription, BigDecimal transferAmount, AccountTypes accountType) {
         //Arrange: Create transfer test data using data builder
-        TransferTransactionData testData = transactionDataFactory.buildTestDataForTransfer(
+        TransferTransactionData testData = transfersDataFactory.buildTestDataForTransferToNewAccount(
                 transferAmount,
                 accountType,
                 originalCustomerId,
-                originalAccountId,
-                true,
-                true
+                originalAccountId
         );
 
         //Act: Use UI to find transaction by amount, verify amount and type is correct
         goTo.findTransactions();
         findTransactionsPage.findTransactionByAmount(testData.accountId(), transferAmount);
-        findTransactionsPage.verifyTransactionTypeAndAmountInTable(testData.expectedTransaction().type(), testData.expectedTransaction().id(), transferAmount);
-        findTransactionsPage.goToTransactionDetails(testData.expectedTransaction().id());
+        findTransactionsPage.verifyTransactionTypeAndAmountInTable(testData.transaction().type(), testData.transaction().id(), transferAmount);
+        findTransactionsPage.goToTransactionDetails(testData.transaction().id());
         TransactionDto actualTransaction = transactionDetailsPage.toDto(testData.accountId());
 
         //Assert: Verify actual transaction from UI matches expected transaction dto
-        Assertions.assertEquals(testData.expectedTransaction(), actualTransaction);
+        Assertions.assertEquals(testData.transaction(), actualTransaction);
     }
 
     @ParameterizedTest(name = "{0} transfer of {1} from {2} account can be found by amount")
     @MethodSource("provideAmountAndAccountType")
     void userCanFindTransferFromByAmount(String amountDescription, BigDecimal transferAmount, AccountTypes accountType) {
         //Arrange: Create transfer test data using data builder
-        TransferTransactionData testData = transactionDataFactory.buildTestDataForTransfer(
+        TransferTransactionData testData = transfersDataFactory.buildTestDataForTransferFromNewAccount(
                 transferAmount,
                 accountType,
                 originalCustomerId,
-                originalAccountId,
-                true,
-                false
+                originalAccountId
         );
 
         //Act: Use UI to find transaction by amount, verify amount and type is correct
         goTo.findTransactions();
         findTransactionsPage.findTransactionByAmount(testData.accountId(), transferAmount);
-        findTransactionsPage.verifyTransactionTypeAndAmountInTable(testData.expectedTransaction().type(), testData.expectedTransaction().id(), transferAmount);
-        findTransactionsPage.goToTransactionDetails(testData.expectedTransaction().id());
+        findTransactionsPage.verifyTransactionTypeAndAmountInTable(testData.transaction().type(), testData.transaction().id(), transferAmount);
+        findTransactionsPage.goToTransactionDetails(testData.transaction().id());
         TransactionDto actualTransaction = transactionDetailsPage.toDto(testData.accountId());
 
         //Assert: Verify actual transaction from UI matches expected transaction dto
-        Assertions.assertEquals(testData.expectedTransaction(), actualTransaction);
+        Assertions.assertEquals(testData.transaction(), actualTransaction);
+    }
+
+    @ParameterizedTest(name = "{0} transfer of {1} to {2} account can be found by date")
+    @MethodSource("provideAmountAndAccountType")
+    void userCanFindTransferToByDate(String amountDescription, BigDecimal transferAmount, AccountTypes accountType) {
+        //Arrange: Create transfer test data using data builder
+        TransferTransactionData testData = transfersDataFactory.buildTestDataForTransferToNewAccount(
+                transferAmount,
+                accountType,
+                originalCustomerId,
+                originalAccountId
+        );
+
+        //Act: Use UI to find transaction by date, verify amount and type is correct
+        goTo.findTransactions();
+        findTransactionsPage.findTransactionByDate(testData.accountId(), testData.transactionDate());
+        findTransactionsPage.verifyTransactionTypeAndAmountInTable(testData.transaction().type(), testData.transaction().id(), transferAmount);
+        findTransactionsPage.goToTransactionDetails(testData.transaction().id());
+        TransactionDto actualTransaction = transactionDetailsPage.toDto(testData.accountId());
+
+        //Assert: Verify actual transaction from UI matches expected transaction dto
+        Assertions.assertEquals(testData.transaction(), actualTransaction);
+    }
+
+    @ParameterizedTest(name = "{0} transfer of {1} from {2} account can be found by date")
+    @MethodSource("provideAmountAndAccountType")
+    void userCanFindTransferFromByDate(String amountDescription, BigDecimal transferAmount, AccountTypes accountType) {
+        //Arrange: Create transfer test data using data builder
+        TransferTransactionData testData = transfersDataFactory.buildTestDataForTransferFromNewAccount(
+                transferAmount,
+                accountType,
+                originalCustomerId,
+                originalAccountId
+        );
+
+        //Act: Use UI to find transaction by date, verify amount and type is correct
+        goTo.findTransactions();
+        findTransactionsPage.findTransactionByDate(testData.accountId(), testData.transactionDate());
+        findTransactionsPage.verifyTransactionTypeAndAmountInTable(testData.transaction().type(), testData.transaction().id(), transferAmount);
+        findTransactionsPage.goToTransactionDetails(testData.transaction().id());
+        TransactionDto actualTransaction = transactionDetailsPage.toDto(testData.accountId());
+
+        //Assert: Verify actual transaction from UI matches expected transaction dto
+        Assertions.assertEquals(testData.transaction(), actualTransaction);
     }
 
     private static Stream<Arguments> provideAmountAndAccountType() {

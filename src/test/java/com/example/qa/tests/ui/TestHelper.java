@@ -4,6 +4,9 @@ import com.example.qa.pages.AccountsOverviewPage;
 import com.example.qa.pages.NavigationPage;
 import com.microsoft.playwright.Page;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 public class TestHelper {
@@ -20,4 +23,10 @@ public class TestHelper {
         goTo.accountsOverview();
         assertThat(accountsOverviewPage.accountTable()).isVisible();
     }
+
+
+    public String formatBigDecimalToString(BigDecimal amount) {
+        return "$" + amount.setScale(2, RoundingMode.HALF_UP).toPlainString();
+    }
+
 }

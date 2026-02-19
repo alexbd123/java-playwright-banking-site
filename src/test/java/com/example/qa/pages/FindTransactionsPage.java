@@ -1,5 +1,7 @@
 package com.example.qa.pages;
 
+import com.example.qa.enums.TransactionTypes;
+import com.example.qa.tests.ui.TestHelper;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 
@@ -11,6 +13,7 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 public class FindTransactionsPage {
 
     private final Page page;
+    private final TestHelper feHelper;
     private final Locator accountIdSelect;
     private final Locator transactionIdInput;
     private final Locator findTransactionByIdButton;
@@ -24,6 +27,7 @@ public class FindTransactionsPage {
 
     public FindTransactionsPage(Page page) {
         this.page = page;
+        this.feHelper = new TestHelper(page);
         this.accountIdSelect = page.locator("#accountId");
         this.transactionIdInput = page.locator("#transactionId");
         this.findTransactionByIdButton = page.locator("#findById");
@@ -38,17 +42,21 @@ public class FindTransactionsPage {
 
     //Expose Locators
 
-    public Locator getTransactionLink(int transactionId) {
-        String selector = String.format("a[href*='transaction.htm?id=%d']", transactionId);
-        return page.locator(selector);
+
+    private Locator getTransactionRow(int transactionId) {
+        return page.locator(String.format("tr:has(a[href*='id=%d'])", transactionId));
+    }
+
+    private Locator getTransactionLink(Locator row) {
+        return row.locator("td:nth-of-type(2) a");
     }
 
     public Locator getDebitCell(int transactionId) {
-        return getTransactionLink(transactionId).locator("xpath=../following-sibling::td[1]");
+        return getTransactionRow(transactionId).locator("td:nth-of-type(3)");
     }
 
     public Locator getCreditCell(int transactionId) {
-        return getTransactionLink(transactionId).locator("xpath=../following-sibling::td[2]");
+        return getTransactionRow(transactionId).locator("td:nth-of-type(4)");
     }
 
     public void selectAccountId(int accountId) {
@@ -80,8 +88,7 @@ public class FindTransactionsPage {
     }
 
     public void clickTransactionLink(int transactionId) {
-        Locator transactionLink = getTransactionLink(transactionId);
-        transactionLink.click();
+        getTransactionLink(getTransactionRow(transactionId)).click();
     }
 
     public void findTransactionByDate(int accountId, String transactionDate) {
@@ -100,11 +107,11 @@ public class FindTransactionsPage {
         clickTransactionLink(transactionId);
     }
 
-    public void verifyTransactionTypeAndAmountInTable(String transactionType, int transactionId, BigDecimal amount) {
-        Locator transactionTypeCell = Objects.equals(transactionType, "Debit")
+    public void verifyTransactionTypeAndAmountInTable(TransactionTypes transactionType, int transactionId, BigDecimal amount) {
+        Locator transactionTypeCell = Objects.equals(transactionType, TransactionTypes.DEBIT)
                 ? getDebitCell(transactionId)
                 : getCreditCell(transactionId);
-        assertThat(transactionTypeCell).hasText("$" + amount);
+        assertThat(transactionTypeCell).hasText(feHelper.formatBigDecimalToString(amount));
     }
 
 }

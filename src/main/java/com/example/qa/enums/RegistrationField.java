@@ -11,7 +11,7 @@ public enum RegistrationField {
     SSN("Social Security Number is required."),
     USERNAME("Username is required."),
     PASSWORD("Password is required."),
-    CONFIRM_PASSWORD("Password confirmation is required."),;
+    CONFIRM_PASSWORD("Password confirmation is required.");
 
     public final String errorMessage;
 

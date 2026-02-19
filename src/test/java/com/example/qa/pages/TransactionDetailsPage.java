@@ -1,6 +1,7 @@
 package com.example.qa.pages;
 
 import com.example.qa.api.dtos.TransactionDto;
+import com.example.qa.enums.TransactionTypes;
 import com.example.qa.tests.utils.TimeUtils;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
@@ -38,8 +39,9 @@ public class TransactionDetailsPage {
         return descriptionCell.innerText();
     }
 
-    public String getType() {
-        return typeCell.innerText();
+    public TransactionTypes getType() {
+        String text = typeCell.innerText().trim();
+        return TransactionTypes.fromString(text);
     }
 
 
