@@ -8,6 +8,6 @@ public record TransferTransactionData(
         int accountId,
         BigDecimal originalBalance,
         TransactionDto transaction,
-        String transactionDate
+        String uiFormattedTransactionDate
 ) {
 }

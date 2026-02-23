@@ -4,6 +4,8 @@ import com.example.qa.api.clients.AccountActionsAPI;
 import com.example.qa.api.dtos.AccountDto;
 import com.example.qa.enums.AccountTypes;
 import com.example.qa.tests.base_tests.AuthenticatedBaseTest;
+import com.example.qa.tests.test_data.test_data_factories.AccountsDataFactory;
+import com.example.qa.tests.test_data.test_data_records.NewAccountsForTests;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -24,12 +26,14 @@ public class OpenNewAccountTests extends AuthenticatedBaseTest {
     protected static AccountActionsAPI accountActionsAPI;
     protected AccountDto originalCheckingAccount;
     protected int originalCheckingAccountId;
+    protected AccountsDataFactory accountsDataFactory;
 
     @BeforeAll
     void initApiClients() {
         accountActionsAPI = new AccountActionsAPI(request);
         originalCheckingAccount = customerContext.originalAccount();
         originalCheckingAccountId = originalCheckingAccount.id();
+        accountsDataFactory = new AccountsDataFactory(request);
     }
 
     @ParameterizedTest(name = "User can open new {0} account and see it in overview")
@@ -46,14 +50,14 @@ public class OpenNewAccountTests extends AuthenticatedBaseTest {
     @ParameterizedTest(name = "User can open new {0} account using new {1} account and see it in overview")
     @MethodSource("provideAccountTypeTestData")
     void userCanUseNewAccountToOpenNewAccount(AccountTypes newAccountType1, AccountTypes newAccountType2) {
-        AccountDto newAccount = accountActionsAPI.createNewAccount(
+        NewAccountsForTests testData = accountsDataFactory.createOneNewAccountForTest(
                 customerContext.customerId(),
-                newAccountType1,
-                originalCheckingAccountId);
-        int newAccountId = newAccount.id();
+                customerContext.originalAccount().id(),
+                newAccountType1
+        );
 
         goTo.openNewAccount();
-        openNewAccountPage.openNewAccount(newAccountType2, newAccountId);
+        openNewAccountPage.openNewAccount(newAccountType2, testData.account1().id());
         assertThat(openNewAccountPage.successfullyOpenedAccountMessage()).isVisible();
         int accountCreatedFromNewAccountId = openNewAccountPage.getNewAccountNumber();
         feHelper.goToOverviewAndWaitForTableVisibility();

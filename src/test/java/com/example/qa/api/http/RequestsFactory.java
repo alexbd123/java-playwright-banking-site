@@ -2,6 +2,7 @@ package com.example.qa.api.http;
 
 import com.example.qa.api.dtos.User;
 import com.example.qa.enums.AccountTypes;
+import com.example.qa.enums.LoanProcessorParameters;
 
 import java.math.BigDecimal;
 
@@ -18,6 +19,13 @@ public class RequestsFactory {
 
     public String buildRetrieveCustomerAccountsRequest(int customerId) {
         return String.format("/%s/accounts", customerId);
+    }
+
+    public String buildInitialBalanceRequest(BigDecimal initialBalance) {
+        return String.format(
+                "/initialBalance/%.2f",
+                initialBalance
+        );
     }
 
     //Account actions
@@ -44,6 +52,32 @@ public class RequestsFactory {
                 user.ssn(),
                 user.username(),
                 user.password()
+        );
+    }
+
+    //Loans
+
+    public String buildLoanRequest(int customerId, BigDecimal amount, BigDecimal downPayment, int fromAccountId) {
+        return String.format(
+                "?customerId=%d&amount=%.2f&downPayment=%.2f&fromAccountId=%d",
+                customerId,
+                amount,
+                downPayment,
+                fromAccountId
+        );
+    }
+
+    public String buildLoanProcessorRequest(LoanProcessorParameters loanParameter) {
+        return String.format(
+                "/loanProcessor/%s",
+                loanParameter.type
+        );
+    }
+
+    public String buildLoanThresholdRequest(int percentage) {
+        return String.format(
+                "/loanProcessorThreshold/%d",
+                percentage
         );
     }
 

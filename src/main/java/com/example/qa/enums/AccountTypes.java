@@ -3,7 +3,8 @@ package com.example.qa.enums;
 
 public enum AccountTypes {
     CHECKING("0", "CHECKING"),
-    SAVINGS("1", "SAVINGS");
+    SAVINGS("1", "SAVINGS"),
+    LOAN("2", "LOAN");
 
     public final String value;
     public final String label;

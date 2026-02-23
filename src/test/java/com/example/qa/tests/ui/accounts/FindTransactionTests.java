@@ -54,7 +54,7 @@ public class FindTransactionTests extends AuthenticatedBaseTest {
 
         //Act: Use UI to find transaction by date, verify amount and type is correct
         goTo.findTransactions();
-        findTransactionsPage.findTransactionByDate(testData.accountId(), testData.transactionDate());
+        findTransactionsPage.findTransactionByDate(testData.accountId(), testData.uiFormattedTransactionDate());
         findTransactionsPage.verifyTransactionTypeAndAmountInTable(testData.expectedTransaction().type(), testData.expectedTransaction().id(), amountToWithdraw);
         findTransactionsPage.goToTransactionDetails(testData.expectedTransaction().id());
         TransactionDto actualTransaction = transactionDetailsPage.toDto(testData.accountId());
@@ -144,7 +144,7 @@ public class FindTransactionTests extends AuthenticatedBaseTest {
 
         //Act: Use UI to find transaction by date, verify amount and type is correct
         goTo.findTransactions();
-        findTransactionsPage.findTransactionByDate(testData.accountId(), testData.transactionDate());
+        findTransactionsPage.findTransactionByDate(testData.accountId(), testData.uiFormattedTransactionDate());
         findTransactionsPage.verifyTransactionTypeAndAmountInTable(testData.transaction().type(), testData.transaction().id(), transferAmount);
         findTransactionsPage.goToTransactionDetails(testData.transaction().id());
         TransactionDto actualTransaction = transactionDetailsPage.toDto(testData.accountId());
@@ -166,7 +166,7 @@ public class FindTransactionTests extends AuthenticatedBaseTest {
 
         //Act: Use UI to find transaction by date, verify amount and type is correct
         goTo.findTransactions();
-        findTransactionsPage.findTransactionByDate(testData.accountId(), testData.transactionDate());
+        findTransactionsPage.findTransactionByDate(testData.accountId(), testData.uiFormattedTransactionDate());
         findTransactionsPage.verifyTransactionTypeAndAmountInTable(testData.transaction().type(), testData.transaction().id(), transferAmount);
         findTransactionsPage.goToTransactionDetails(testData.transaction().id());
         TransactionDto actualTransaction = transactionDetailsPage.toDto(testData.accountId());

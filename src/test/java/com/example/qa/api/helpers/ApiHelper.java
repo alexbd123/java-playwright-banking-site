@@ -59,4 +59,26 @@ public class ApiHelper {
         );
     }
 
+    public AccountDto determineNewAccountFromList(List<AccountDto> accountsBefore, int customerId) {
+        List<AccountDto> accountsAfter = accountActionsAPI.sendGetRequestForCustomerAccountsInfo(customerId);
+        List<AccountDto> newAccounts = accountsAfter.stream().filter(a -> !accountsBefore.contains(a)).toList();
+        if (newAccounts.size() == 1) {
+            return newAccounts.get(0);
+        } else if (newAccounts.isEmpty()) {
+            throw new RuntimeException("There are no newly created accounts for customer " + customerId);
+        }
+        throw new RuntimeException (
+                "More than one new account found for account " + customerId
+        );
+    }
+
+    public BigDecimal getTotalAvailableFundsForCustomer(int customerId) {
+        List<AccountDto> accounts = accountActionsAPI.sendGetRequestForCustomerAccountsInfo(customerId);
+        BigDecimal availableFunds = new BigDecimal("0");
+        for (AccountDto account : accounts) {
+            availableFunds = availableFunds.add(retrieveAccountBalance(customerId, account.id()));
+        }
+        return availableFunds;
+    }
+
 }

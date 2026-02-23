@@ -5,6 +5,6 @@ import com.example.qa.api.dtos.TransactionDto;
 public record WithdrawalTransactionData(
         int accountId,
         TransactionDto expectedTransaction,
-        String transactionDate
+        String uiFormattedTransactionDate
 ) {
 }
