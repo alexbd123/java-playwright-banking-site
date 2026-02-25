@@ -2,7 +2,7 @@ package com.example.qa.tests.test_data.test_data_factories;
 
 import com.example.qa.api.clients.AccountActionsAPI;
 import com.example.qa.api.dtos.TransactionDto;
-import com.example.qa.enums.AccountTypes;
+import com.example.qa.enums.AccountType;
 import com.example.qa.tests.test_data.test_data_records.WithdrawalTransactionData;
 import com.example.qa.tests.utils.TimeUtils;
 import com.microsoft.playwright.APIRequestContext;
@@ -22,12 +22,12 @@ public class WithdrawalsDataFactory {
 
     public WithdrawalTransactionData buildTestDataForWithdrawalFromNewAccount(
             BigDecimal amountToWithdraw,
-            AccountTypes accountType,
+            AccountType accountType,
             int customerId,
             int originalCheckingAccountId
     ) {
         //Get correct account ID
-        int accountId = accountType == AccountTypes.CHECKING ? originalCheckingAccountId :
+        int accountId = accountType == AccountType.CHECKING ? originalCheckingAccountId :
                 accountActionsAPI.createNewAccount(
                         customerId,
                         accountType,

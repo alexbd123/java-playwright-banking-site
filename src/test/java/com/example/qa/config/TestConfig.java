@@ -32,5 +32,9 @@ public class TestConfig {
             return properties.getProperty("api.base.url");
     }
 
+    public static String getInitialBalance() {
+            return properties.getProperty("initial.balance");
+    }
+
     public static boolean getHeadless() { return Boolean.parseBoolean(properties.getProperty("headless")); }
 }

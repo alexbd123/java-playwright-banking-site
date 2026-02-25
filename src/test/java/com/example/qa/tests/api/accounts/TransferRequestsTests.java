@@ -4,7 +4,7 @@ import com.example.qa.api.clients.AccountActionsAPI;
 import com.example.qa.api.dtos.AccountDto;
 import com.example.qa.api.dtos.TransactionDto;
 import com.example.qa.api.http.ResponsesFactory;
-import com.example.qa.enums.TransactionTypes;
+import com.example.qa.enums.TransactionType;
 import com.example.qa.tests.base_tests.AuthenticatedBaseTest;
 import com.example.qa.tests.test_data.test_data_factories.AccountsDataFactory;
 import com.example.qa.tests.test_data.test_data_records.NewAccountsForTests;
@@ -14,7 +14,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import com.example.qa.enums.AccountTypes;
+import com.example.qa.enums.AccountType;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.math.BigDecimal;
@@ -48,7 +48,7 @@ public class TransferRequestsTests extends AuthenticatedBaseTest {
 
     @ParameterizedTest(name = "Successful {0} transfer POST request from {2} account to {3} account")
     @MethodSource("provideTransferAmountAndAccountTypes")
-    void fundsCanBeTransferredBetweenAccounts(String amountDescription, BigDecimal transferAmount, AccountTypes fromAccountType, AccountTypes toAccountType) {
+    void fundsCanBeTransferredBetweenAccounts(String amountDescription, BigDecimal transferAmount, AccountType fromAccountType, AccountType toAccountType) {
         //Arrange: Create two accounts for transfer, get pre-transfer expected balance and transfer dto
         NewAccountsForTests testData = accountsDataFactory.createTwoNewAccountsForTest(
                 originalCustomerId,
@@ -60,7 +60,7 @@ public class TransferRequestsTests extends AuthenticatedBaseTest {
         TransactionDto expectedTransaction = new TransactionDto(
                 0,
                 testData.account2().id(),
-                TransactionTypes.CREDIT,
+                TransactionType.CREDIT,
                 time.getUnixDateForApiAssertion(),
                 transferAmount,
                 TRANSFER_DESCRIPTION);
@@ -89,18 +89,18 @@ public class TransferRequestsTests extends AuthenticatedBaseTest {
 
     private static Stream<Arguments> provideTransferAmountAndAccountTypes() {
         return Stream.of(
-                Arguments.of("small", new BigDecimal("20.00"), AccountTypes.CHECKING, AccountTypes.CHECKING),
-                Arguments.of("small", new BigDecimal("20.00"), AccountTypes.CHECKING, AccountTypes.SAVINGS),
-                Arguments.of("small", new BigDecimal("20.00"), AccountTypes.SAVINGS, AccountTypes.CHECKING),
-                Arguments.of("small", new BigDecimal("20.00"), AccountTypes.SAVINGS, AccountTypes.SAVINGS),
-                Arguments.of("medium", new BigDecimal("1000.00"), AccountTypes.CHECKING, AccountTypes.CHECKING),
-                Arguments.of("medium", new BigDecimal("1000.00"), AccountTypes.CHECKING, AccountTypes.SAVINGS),
-                Arguments.of("medium", new BigDecimal("1000.00"), AccountTypes.SAVINGS, AccountTypes.CHECKING),
-                Arguments.of("medium", new BigDecimal("1000.00"), AccountTypes.SAVINGS, AccountTypes.SAVINGS),
-                Arguments.of("large", new BigDecimal("500000.00"), AccountTypes.CHECKING, AccountTypes.CHECKING),
-                Arguments.of("large", new BigDecimal("500000.00"), AccountTypes.CHECKING, AccountTypes.SAVINGS),
-                Arguments.of("large", new BigDecimal("500000.00"), AccountTypes.SAVINGS, AccountTypes.CHECKING),
-                Arguments.of("large", new BigDecimal("500000.00"), AccountTypes.SAVINGS, AccountTypes.SAVINGS)
+                Arguments.of("small", new BigDecimal("20.00"), AccountType.CHECKING, AccountType.CHECKING),
+                Arguments.of("small", new BigDecimal("20.00"), AccountType.CHECKING, AccountType.SAVINGS),
+                Arguments.of("small", new BigDecimal("20.00"), AccountType.SAVINGS, AccountType.CHECKING),
+                Arguments.of("small", new BigDecimal("20.00"), AccountType.SAVINGS, AccountType.SAVINGS),
+                Arguments.of("medium", new BigDecimal("1000.00"), AccountType.CHECKING, AccountType.CHECKING),
+                Arguments.of("medium", new BigDecimal("1000.00"), AccountType.CHECKING, AccountType.SAVINGS),
+                Arguments.of("medium", new BigDecimal("1000.00"), AccountType.SAVINGS, AccountType.CHECKING),
+                Arguments.of("medium", new BigDecimal("1000.00"), AccountType.SAVINGS, AccountType.SAVINGS),
+                Arguments.of("large", new BigDecimal("500000.00"), AccountType.CHECKING, AccountType.CHECKING),
+                Arguments.of("large", new BigDecimal("500000.00"), AccountType.CHECKING, AccountType.SAVINGS),
+                Arguments.of("large", new BigDecimal("500000.00"), AccountType.SAVINGS, AccountType.CHECKING),
+                Arguments.of("large", new BigDecimal("500000.00"), AccountType.SAVINGS, AccountType.SAVINGS)
         );
     }
 

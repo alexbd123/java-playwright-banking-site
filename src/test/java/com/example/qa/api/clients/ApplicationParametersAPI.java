@@ -2,7 +2,7 @@ package com.example.qa.api.clients;
 
 import com.example.qa.api.http.HTTPRequests;
 import com.example.qa.api.http.RequestsFactory;
-import com.example.qa.enums.LoanProcessorParameters;
+import com.example.qa.enums.LoanProcessorParameter;
 import com.microsoft.playwright.APIRequestContext;
 import com.microsoft.playwright.APIResponse;
 
@@ -18,7 +18,7 @@ public class ApplicationParametersAPI {
         this.requestsFactory = new RequestsFactory();
     }
 
-    public void setLoanApprovalType(LoanProcessorParameters parameter) {
+    public void setLoanApprovalType(LoanProcessorParameter parameter) {
         APIResponse response = http.post(
                 "setParameter",
                 requestsFactory.buildLoanProcessorRequest(parameter)

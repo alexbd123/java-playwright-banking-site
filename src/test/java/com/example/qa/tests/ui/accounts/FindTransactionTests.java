@@ -2,7 +2,7 @@ package com.example.qa.tests.ui.accounts;
 
 import com.example.qa.api.clients.AccountActionsAPI;
 import com.example.qa.api.dtos.TransactionDto;
-import com.example.qa.enums.AccountTypes;
+import com.example.qa.enums.AccountType;
 import com.example.qa.tests.base_tests.AuthenticatedBaseTest;
 import com.example.qa.tests.test_data.test_data_factories.TransfersDataFactory;
 import com.example.qa.tests.test_data.test_data_factories.WithdrawalsDataFactory;
@@ -43,7 +43,7 @@ public class FindTransactionTests extends AuthenticatedBaseTest {
 
     @ParameterizedTest(name = "{0} withdrawal of {1} from {2} account can be found by date")
     @MethodSource("provideAmountAndAccountType")
-    void userCanFindWithdrawalByDate(String amountDescription, BigDecimal amountToWithdraw, AccountTypes accountType) {
+    void userCanFindWithdrawalByDate(String amountDescription, BigDecimal amountToWithdraw, AccountType accountType) {
         //Arrange: Use test data class to create test data
         WithdrawalTransactionData testData = withdrawalsDataFactory.buildTestDataForWithdrawalFromNewAccount(
                 amountToWithdraw,
@@ -65,7 +65,7 @@ public class FindTransactionTests extends AuthenticatedBaseTest {
 
     @ParameterizedTest(name = "{0} withdrawal of {1} from {2} account can be found by amount")
     @MethodSource("provideAmountAndAccountType")
-    void userCanFindWithdrawalByAmount(String amountDescription, BigDecimal amountToWithdraw, AccountTypes accountType) {
+    void userCanFindWithdrawalByAmount(String amountDescription, BigDecimal amountToWithdraw, AccountType accountType) {
         //Arrange: Use test data class to create test data
         WithdrawalTransactionData testData = withdrawalsDataFactory.buildTestDataForWithdrawalFromNewAccount(
                 amountToWithdraw,
@@ -89,7 +89,7 @@ public class FindTransactionTests extends AuthenticatedBaseTest {
 
     @ParameterizedTest(name = "{0} transfer of {1} to {2} account can be found by amount")
     @MethodSource("provideAmountAndAccountType")
-    void userCanFindTransferToByAmount(String amountDescription, BigDecimal transferAmount, AccountTypes accountType) {
+    void userCanFindTransferToByAmount(String amountDescription, BigDecimal transferAmount, AccountType accountType) {
         //Arrange: Create transfer test data using data builder
         TransferTransactionData testData = transfersDataFactory.buildTestDataForTransferToNewAccount(
                 transferAmount,
@@ -111,7 +111,7 @@ public class FindTransactionTests extends AuthenticatedBaseTest {
 
     @ParameterizedTest(name = "{0} transfer of {1} from {2} account can be found by amount")
     @MethodSource("provideAmountAndAccountType")
-    void userCanFindTransferFromByAmount(String amountDescription, BigDecimal transferAmount, AccountTypes accountType) {
+    void userCanFindTransferFromByAmount(String amountDescription, BigDecimal transferAmount, AccountType accountType) {
         //Arrange: Create transfer test data using data builder
         TransferTransactionData testData = transfersDataFactory.buildTestDataForTransferFromNewAccount(
                 transferAmount,
@@ -133,7 +133,7 @@ public class FindTransactionTests extends AuthenticatedBaseTest {
 
     @ParameterizedTest(name = "{0} transfer of {1} to {2} account can be found by date")
     @MethodSource("provideAmountAndAccountType")
-    void userCanFindTransferToByDate(String amountDescription, BigDecimal transferAmount, AccountTypes accountType) {
+    void userCanFindTransferToByDate(String amountDescription, BigDecimal transferAmount, AccountType accountType) {
         //Arrange: Create transfer test data using data builder
         TransferTransactionData testData = transfersDataFactory.buildTestDataForTransferToNewAccount(
                 transferAmount,
@@ -155,7 +155,7 @@ public class FindTransactionTests extends AuthenticatedBaseTest {
 
     @ParameterizedTest(name = "{0} transfer of {1} from {2} account can be found by date")
     @MethodSource("provideAmountAndAccountType")
-    void userCanFindTransferFromByDate(String amountDescription, BigDecimal transferAmount, AccountTypes accountType) {
+    void userCanFindTransferFromByDate(String amountDescription, BigDecimal transferAmount, AccountType accountType) {
         //Arrange: Create transfer test data using data builder
         TransferTransactionData testData = transfersDataFactory.buildTestDataForTransferFromNewAccount(
                 transferAmount,
@@ -177,12 +177,12 @@ public class FindTransactionTests extends AuthenticatedBaseTest {
 
     private static Stream<Arguments> provideAmountAndAccountType() {
         return Stream.of(
-                Arguments.of( "Small", new BigDecimal("10.00"), AccountTypes.CHECKING),
-                Arguments.of("Medium", new BigDecimal("150.00"), AccountTypes.CHECKING),
-                Arguments.of("Large", new BigDecimal("10000.00"), AccountTypes.CHECKING),
-                Arguments.of("Small", new BigDecimal("10.00"), AccountTypes.SAVINGS),
-                Arguments.of("Medium", new BigDecimal("150.00"), AccountTypes.SAVINGS),
-                Arguments.of("Large", new BigDecimal("10000.00"), AccountTypes.SAVINGS)
+                Arguments.of( "Small", new BigDecimal("10.00"), AccountType.CHECKING),
+                Arguments.of("Medium", new BigDecimal("150.00"), AccountType.CHECKING),
+                Arguments.of("Large", new BigDecimal("10000.00"), AccountType.CHECKING),
+                Arguments.of("Small", new BigDecimal("10.00"), AccountType.SAVINGS),
+                Arguments.of("Medium", new BigDecimal("150.00"), AccountType.SAVINGS),
+                Arguments.of("Large", new BigDecimal("10000.00"), AccountType.SAVINGS)
         );
     }
 }

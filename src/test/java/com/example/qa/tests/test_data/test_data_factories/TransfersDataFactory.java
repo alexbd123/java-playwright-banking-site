@@ -3,7 +3,7 @@ package com.example.qa.tests.test_data.test_data_factories;
 import com.example.qa.api.clients.AccountActionsAPI;
 import com.example.qa.api.dtos.TransactionDto;
 import com.example.qa.api.helpers.ApiHelper;
-import com.example.qa.enums.AccountTypes;
+import com.example.qa.enums.AccountType;
 import com.example.qa.tests.test_data.test_data_records.TransferTransactionData;
 import com.example.qa.tests.utils.TimeUtils;
 import com.microsoft.playwright.APIRequestContext;
@@ -25,7 +25,7 @@ public class TransfersDataFactory {
 
     public TransferTransactionData buildTestDataForTransferToNewAccount(
             BigDecimal transferAmount,
-            AccountTypes accountType,
+            AccountType accountType,
             int customerId,
             int originalAccountId
     ) {
@@ -43,7 +43,7 @@ public class TransfersDataFactory {
 
     public TransferTransactionData buildTestDataForTransferFromNewAccount(
             BigDecimal transferAmount,
-            AccountTypes accountType,
+            AccountType accountType,
             int customerId,
             int originalAccountId
     ) {

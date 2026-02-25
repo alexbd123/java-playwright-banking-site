@@ -1,7 +1,7 @@
 package com.example.qa.enums;
 
 
-public enum AccountTypes {
+public enum AccountType {
     CHECKING("0", "CHECKING"),
     SAVINGS("1", "SAVINGS"),
     LOAN("2", "LOAN");
@@ -9,7 +9,7 @@ public enum AccountTypes {
     public final String value;
     public final String label;
 
-    AccountTypes(String value, String label) {
+    AccountType(String value, String label) {
         this.value = value;
         this.label = label;
     }

@@ -2,7 +2,7 @@ package com.example.qa.tests.ui.accounts;
 
 import com.example.qa.api.clients.AccountActionsAPI;
 import com.example.qa.api.dtos.AccountDto;
-import com.example.qa.enums.AccountTypes;
+import com.example.qa.enums.AccountType;
 import com.example.qa.tests.base_tests.AuthenticatedBaseTest;
 import com.example.qa.tests.test_data.test_data_factories.AccountsDataFactory;
 import com.example.qa.tests.test_data.test_data_records.NewAccountsForTests;
@@ -37,8 +37,8 @@ public class OpenNewAccountTests extends AuthenticatedBaseTest {
     }
 
     @ParameterizedTest(name = "User can open new {0} account and see it in overview")
-    @EnumSource(AccountTypes.class)
-    void userCanOpenNewAccount(AccountTypes accountType) {
+    @EnumSource(AccountType.class)
+    void userCanOpenNewAccount(AccountType accountType) {
         goTo.openNewAccount();
         openNewAccountPage.openNewAccount(accountType, originalCheckingAccountId);
         assertThat(openNewAccountPage.successfullyOpenedAccountMessage()).isVisible();
@@ -49,7 +49,7 @@ public class OpenNewAccountTests extends AuthenticatedBaseTest {
 
     @ParameterizedTest(name = "User can open new {0} account using new {1} account and see it in overview")
     @MethodSource("provideAccountTypeTestData")
-    void userCanUseNewAccountToOpenNewAccount(AccountTypes newAccountType1, AccountTypes newAccountType2) {
+    void userCanUseNewAccountToOpenNewAccount(AccountType newAccountType1, AccountType newAccountType2) {
         NewAccountsForTests testData = accountsDataFactory.createOneNewAccountForTest(
                 customerContext.customerId(),
                 customerContext.originalAccount().id(),
@@ -69,10 +69,10 @@ public class OpenNewAccountTests extends AuthenticatedBaseTest {
 
     private static Stream<Arguments> provideAccountTypeTestData() {
         return Stream.of(
-                Arguments.of(AccountTypes.CHECKING, AccountTypes.CHECKING),
-                Arguments.of(AccountTypes.CHECKING, AccountTypes.SAVINGS),
-                Arguments.of(AccountTypes.SAVINGS, AccountTypes.CHECKING),
-                Arguments.of(AccountTypes.SAVINGS, AccountTypes.SAVINGS)
+                Arguments.of(AccountType.CHECKING, AccountType.CHECKING),
+                Arguments.of(AccountType.CHECKING, AccountType.SAVINGS),
+                Arguments.of(AccountType.SAVINGS, AccountType.CHECKING),
+                Arguments.of(AccountType.SAVINGS, AccountType.SAVINGS)
         );
     }
 

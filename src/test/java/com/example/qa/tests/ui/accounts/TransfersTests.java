@@ -13,7 +13,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import com.example.qa.enums.AccountTypes;
+import com.example.qa.enums.AccountType;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.math.BigDecimal;
@@ -42,7 +42,7 @@ public class TransfersTests extends AuthenticatedBaseTest {
 
     @ParameterizedTest(name = "User can transfer {0} to {1} account")
     @MethodSource("provideTransferAmountAndAccountType")
-    void userShouldBeAbleToTransferFundsAndBalanceIncreases(BigDecimal transferAmount, AccountTypes accountType) {
+    void userShouldBeAbleToTransferFundsAndBalanceIncreases(BigDecimal transferAmount, AccountType accountType) {
         //Arrange: Create transfer test data using data builder
         NewAccountsForTests testData = accountsDataFactory.createOneNewAccountForTest(
                 originalCustomerId,
@@ -63,7 +63,7 @@ public class TransfersTests extends AuthenticatedBaseTest {
 
     @ParameterizedTest(name = "User can transfer {0} from {1} account and balance correctly decreases")
     @MethodSource("provideTransferAmountAndAccountType")
-    void userShouldBeAbleToTransferFundsAndBalanceDecreases(BigDecimal transferAmount, AccountTypes accountType) {
+    void userShouldBeAbleToTransferFundsAndBalanceDecreases(BigDecimal transferAmount, AccountType accountType) {
         //Arrange: Create transfer test data using data builder
         NewAccountsForTests testData = accountsDataFactory.createOneNewAccountForTest(
                 originalCustomerId,
@@ -84,7 +84,7 @@ public class TransfersTests extends AuthenticatedBaseTest {
 
     @ParameterizedTest(name = "Transaction of {0} to {1} account creates correct credit transaction record")
     @MethodSource("provideTransferAmountAndAccountType")
-    void transactionCreatesCorrectCreditTransactionRecord(BigDecimal transferAmount, AccountTypes accountType) {
+    void transactionCreatesCorrectCreditTransactionRecord(BigDecimal transferAmount, AccountType accountType) {
         //Arrange: Create transfer test data using data builder
         TransferTransactionData testData = transfersDataFactory.buildTestDataForTransferToNewAccount(
                 transferAmount,
@@ -103,7 +103,7 @@ public class TransfersTests extends AuthenticatedBaseTest {
 
     @ParameterizedTest(name = "Transaction of {0} from {1} account creates correct debit transaction record")
     @MethodSource("provideTransferAmountAndAccountType")
-    void transactionCreatesCorrectDebitTransactionRecord(BigDecimal transferAmount, AccountTypes accountType) {
+    void transactionCreatesCorrectDebitTransactionRecord(BigDecimal transferAmount, AccountType accountType) {
         //Arrange: Create transfer test data using data builder
         TransferTransactionData testData = transfersDataFactory.buildTestDataForTransferFromNewAccount(
                 transferAmount,
@@ -124,12 +124,12 @@ public class TransfersTests extends AuthenticatedBaseTest {
 
     private static Stream<Arguments> provideTransferAmountAndAccountType() {
         return Stream.of(
-                Arguments.of(new BigDecimal("5.00"), AccountTypes.CHECKING),
-                Arguments.of(new BigDecimal("150.00"), AccountTypes.CHECKING),
-                Arguments.of(new BigDecimal("10000.00"), AccountTypes.CHECKING),
-                Arguments.of(new BigDecimal("5.00"), AccountTypes.SAVINGS),
-                Arguments.of(new BigDecimal("150.00"), AccountTypes.SAVINGS),
-                Arguments.of(new BigDecimal("10000.00"), AccountTypes.SAVINGS)
+                Arguments.of(new BigDecimal("5.00"), AccountType.CHECKING),
+                Arguments.of(new BigDecimal("150.00"), AccountType.CHECKING),
+                Arguments.of(new BigDecimal("10000.00"), AccountType.CHECKING),
+                Arguments.of(new BigDecimal("5.00"), AccountType.SAVINGS),
+                Arguments.of(new BigDecimal("150.00"), AccountType.SAVINGS),
+                Arguments.of(new BigDecimal("10000.00"), AccountType.SAVINGS)
         );
     }
 

@@ -4,7 +4,7 @@ import com.example.qa.api.dtos.AccountDto;
 import com.example.qa.api.dtos.TransactionDto;
 import com.example.qa.api.http.HTTPRequests;
 import com.example.qa.api.http.RequestsFactory;
-import com.example.qa.enums.AccountTypes;
+import com.example.qa.enums.AccountType;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.playwright.APIRequestContext;
@@ -31,7 +31,7 @@ public class AccountActionsAPI {
     //POST
     public AccountDto createNewAccount(
             Integer customerId,
-            AccountTypes accountType,
+            AccountType accountType,
             int fromAccountId
     ) {
         APIResponse response = http.post("createAccount",

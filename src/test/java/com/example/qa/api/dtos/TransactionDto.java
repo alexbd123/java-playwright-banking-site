@@ -1,6 +1,6 @@
 package com.example.qa.api.dtos;
 
-import com.example.qa.enums.TransactionTypes;
+import com.example.qa.enums.TransactionType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -18,7 +18,7 @@ public record TransactionDto(
         int accountId,
 
         @JsonProperty("type")
-        TransactionTypes type,
+        TransactionType type,
 
         @JsonProperty("date")
         String date,

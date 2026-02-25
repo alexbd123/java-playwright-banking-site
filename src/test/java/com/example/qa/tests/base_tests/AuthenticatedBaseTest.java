@@ -34,6 +34,7 @@ public abstract class AuthenticatedBaseTest {
     protected FindTransactionsPage findTransactionsPage;
     protected TransactionDetailsPage transactionDetailsPage;
     protected AccountActivityPage accountActivityPage;
+    protected RequestLoansPage requestLoansPage;
 
     protected ApiHelper beHelper;
     protected TestHelper feHelper;
@@ -123,5 +124,6 @@ public abstract class AuthenticatedBaseTest {
         transactionDetailsPage = new TransactionDetailsPage(page);
         accountActivityPage = new AccountActivityPage(page);
         feHelper = new TestHelper(page);
+        requestLoansPage = new RequestLoansPage(page);
     }
 }

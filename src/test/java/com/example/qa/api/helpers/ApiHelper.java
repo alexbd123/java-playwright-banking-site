@@ -6,9 +6,11 @@ import com.example.qa.api.dtos.AccountDto;
 import com.example.qa.api.dtos.CustomerDto;
 import com.example.qa.api.dtos.TransactionDto;
 import com.example.qa.api.dtos.User;
+import com.example.qa.enums.AccountType;
 import com.microsoft.playwright.APIRequestContext;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 public class ApiHelper {
@@ -72,13 +74,23 @@ public class ApiHelper {
         );
     }
 
-    public BigDecimal getTotalAvailableFundsForCustomer(int customerId) {
+    public BigDecimal getTotalAvailableFundsForLoan(int customerId) {
         List<AccountDto> accounts = accountActionsAPI.sendGetRequestForCustomerAccountsInfo(customerId);
         BigDecimal availableFunds = new BigDecimal("0");
         for (AccountDto account : accounts) {
-            availableFunds = availableFunds.add(retrieveAccountBalance(customerId, account.id()));
+            if (account.type() != AccountType.LOAN) {
+                availableFunds = availableFunds.add(retrieveAccountBalance(customerId, account.id()));
+            }
         }
         return availableFunds;
+    }
+
+    public BigDecimal determineAvailableFundsLoanAmount(int customerId, BigDecimal percentage) {
+        BigDecimal availableFunds = getTotalAvailableFundsForLoan(customerId);
+        return availableFunds
+                .multiply(new BigDecimal("100"))
+                .divide(percentage, 10, RoundingMode.HALF_UP)
+                .setScale(2, RoundingMode.HALF_UP);
     }
 
 }

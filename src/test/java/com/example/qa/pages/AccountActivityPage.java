@@ -1,7 +1,7 @@
 package com.example.qa.pages;
 
 import com.example.qa.api.dtos.AccountDto;
-import com.example.qa.enums.AccountTypes;
+import com.example.qa.enums.AccountType;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 
@@ -37,8 +37,8 @@ public class AccountActivityPage {
         return Integer.parseInt(accountIdCell.innerText());
     }
 
-    public AccountTypes getAccountType() {
-        return AccountTypes.valueOf(accountTypeCell.innerText());
+    public AccountType getAccountType() {
+        return AccountType.valueOf(accountTypeCell.innerText());
     }
 
     public BigDecimal getBalance() {

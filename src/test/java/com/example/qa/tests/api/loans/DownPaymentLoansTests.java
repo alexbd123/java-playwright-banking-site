@@ -6,8 +6,8 @@ import com.example.qa.api.clients.LoansAPI;
 import com.example.qa.api.dtos.AccountDto;
 import com.example.qa.api.dtos.LoanResponseDto;
 import com.example.qa.api.http.ResponsesFactory;
-import com.example.qa.enums.AccountTypes;
-import com.example.qa.enums.LoanProcessorParameters;
+import com.example.qa.enums.AccountType;
+import com.example.qa.enums.LoanProcessorParameter;
 import com.example.qa.tests.base_tests.AuthenticatedBaseTest;
 import com.example.qa.tests.test_data.test_data_factories.AccountsDataFactory;
 import com.example.qa.tests.test_data.test_data_records.NewAccountsForTests;
@@ -20,7 +20,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -47,34 +46,33 @@ public class DownPaymentLoansTests extends AuthenticatedBaseTest {
         accountsDataFactory = new AccountsDataFactory(request);
         loansRequests = new LoansAPI(request);
         applicationParametersAPI = new ApplicationParametersAPI(request);
-        applicationParametersAPI.setLoanApprovalType(LoanProcessorParameters.DOWN_PAYMENT);
+        applicationParametersAPI.setLoanApprovalType(LoanProcessorParameter.DOWN_PAYMENT);
     }
 
     @ParameterizedTest(name = "Request for loan of {0} with down payment of {1} should be {2}")
     @MethodSource("provideLoadDownPaymentExpectedResult")
-    void correctLoanResultForDownPayment(String loan, String downPayment, String approvalStatus) {
-        NewAccountsForTests testData = accountsDataFactory.createOneNewAccountForTest(originalCustomerId, originalAccountId, AccountTypes.CHECKING);
+    void correctLoanResultForDownPayment(String loan, String downPayment, boolean expectedApproval) {
+        NewAccountsForTests testData = accountsDataFactory.createOneNewAccountForTest(originalCustomerId, originalAccountId, AccountType.CHECKING);
         LoanResponseDto actualResponse = loansRequests.requestLoan(
                 originalCustomerId,
                 new BigDecimal(loan),
                 new BigDecimal(downPayment),
                 testData.account1().id()
         );
-        boolean expectedApprovalStatus = Objects.equals(approvalStatus, "approved");
-        Assertions.assertEquals(expectedApprovalStatus, actualResponse.approved());
+        Assertions.assertEquals(expectedApproval, actualResponse.approved());
     }
 
     private static Stream<Arguments> provideLoadDownPaymentExpectedResult() {
         return Stream.of(
-                Arguments.of("500", "99.99", "denied"),
-                Arguments.of("500", "100.00", "approved"),
-                Arguments.of("500", "100.01", "approved"),
-                Arguments.of("1000", "199.99", "denied"),
-                Arguments.of("1000", "200.00", "approved"),
-                Arguments.of("1000", "200.01", "approved"),
-                Arguments.of("2000", "399.99", "denied"),
-                Arguments.of("2000", "400.00", "approved"),
-                Arguments.of("2000", "400.01", "approved")
+                Arguments.of("500", "99.99", false),
+                Arguments.of("500", "100.00", true),
+                Arguments.of("500", "100.01", true),
+                Arguments.of("1000", "199.99", false),
+                Arguments.of("1000", "200.00", true),
+                Arguments.of("1000", "200.01", true),
+                Arguments.of("2000", "399.99", false),
+                Arguments.of("2000", "400.00", true),
+                Arguments.of("2000", "400.01", true)
         );
     }
 

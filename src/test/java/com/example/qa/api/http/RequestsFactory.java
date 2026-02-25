@@ -1,16 +1,16 @@
 package com.example.qa.api.http;
 
 import com.example.qa.api.dtos.User;
-import com.example.qa.enums.AccountTypes;
-import com.example.qa.enums.LoanProcessorParameters;
+import com.example.qa.enums.AccountType;
+import com.example.qa.enums.LoanProcessorParameter;
 
 import java.math.BigDecimal;
 
 public class RequestsFactory {
 
     //Accounts
-    public String buildCreateNewAccountRequest(int customerId, AccountTypes accountType, int fromAccountId) {
-        int accountTypeInt = (accountType == AccountTypes.CHECKING) ? 0 : 1;
+    public String buildCreateNewAccountRequest(int customerId, AccountType accountType, int fromAccountId) {
+        int accountTypeInt = (accountType == AccountType.CHECKING) ? 0 : 1;
         return String.format("?customerId=%d&newAccountType=%d&fromAccountId=%d",
                 customerId,
                 accountTypeInt,
@@ -67,7 +67,7 @@ public class RequestsFactory {
         );
     }
 
-    public String buildLoanProcessorRequest(LoanProcessorParameters loanParameter) {
+    public String buildLoanProcessorRequest(LoanProcessorParameter loanParameter) {
         return String.format(
                 "/loanProcessor/%s",
                 loanParameter.type

@@ -1,6 +1,6 @@
 package com.example.qa.pages;
 
-import com.example.qa.enums.TransactionTypes;
+import com.example.qa.enums.TransactionType;
 import com.example.qa.tests.ui.TestHelper;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
@@ -107,8 +107,8 @@ public class FindTransactionsPage {
         clickTransactionLink(transactionId);
     }
 
-    public void verifyTransactionTypeAndAmountInTable(TransactionTypes transactionType, int transactionId, BigDecimal amount) {
-        Locator transactionTypeCell = Objects.equals(transactionType, TransactionTypes.DEBIT)
+    public void verifyTransactionTypeAndAmountInTable(TransactionType transactionType, int transactionId, BigDecimal amount) {
+        Locator transactionTypeCell = Objects.equals(transactionType, TransactionType.DEBIT)
                 ? getDebitCell(transactionId)
                 : getCreditCell(transactionId);
         assertThat(transactionTypeCell).hasText(feHelper.formatBigDecimalToString(amount));

@@ -1,6 +1,6 @@
 package com.example.qa.enums;
 
-public enum LoanProcessorParameters {
+public enum LoanProcessorParameter {
 
     AVAILABLE_FUNDS("funds"),
     DOWN_PAYMENT("down"),
@@ -8,7 +8,7 @@ public enum LoanProcessorParameters {
 
     public final String type;
 
-    LoanProcessorParameters(String type) {
+    LoanProcessorParameter(String type) {
         this.type = type;
     }
 

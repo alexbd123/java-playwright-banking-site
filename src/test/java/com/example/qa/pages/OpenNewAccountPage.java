@@ -1,6 +1,6 @@
 package com.example.qa.pages;
 
-import com.example.qa.enums.AccountTypes;
+import com.example.qa.enums.AccountType;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.TimeoutError;
@@ -67,14 +67,14 @@ public class OpenNewAccountPage {
         }
     }
 
-    public void openNewAccount(AccountTypes accountTypes, int seedingAccount) {
-        selectAccountTypeFromDropdown(accountTypes);
-        assertThat(selectedAccount()).hasText(accountTypes.getLabel());
+    public void openNewAccount(AccountType accountType, int seedingAccount) {
+        selectAccountTypeFromDropdown(accountType);
+        assertThat(selectedAccount()).hasText(accountType.getLabel());
         selectExistingAccountNumberFromDropdown(seedingAccount);
         clickOpenNewAccountButton();
     }
 
-    public void selectAccountTypeFromDropdown(AccountTypes accountType) {
+    public void selectAccountTypeFromDropdown(AccountType accountType) {
         accountTypeDropdown.selectOption(accountType.getValue());
     }
 

@@ -32,4 +32,8 @@ public class TimeUtils {
         String todayFormatted = today.format(UI_DATE);
         return convertUIDateToUnix(todayFormatted);
     }
+
+    public String getDateInUiFormat() {
+        return LocalDate.now().format(UI_DATE);
+    }
 }

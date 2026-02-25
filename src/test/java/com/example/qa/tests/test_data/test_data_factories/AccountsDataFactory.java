@@ -3,7 +3,7 @@ package com.example.qa.tests.test_data.test_data_factories;
 import com.example.qa.api.clients.AccountActionsAPI;
 import com.example.qa.api.dtos.AccountDto;
 import com.example.qa.api.helpers.ApiHelper;
-import com.example.qa.enums.AccountTypes;
+import com.example.qa.enums.AccountType;
 import com.example.qa.tests.test_data.test_data_records.NewAccountsForTests;
 import com.microsoft.playwright.APIRequestContext;
 
@@ -20,7 +20,7 @@ public class AccountsDataFactory {
     public NewAccountsForTests createOneNewAccountForTest(
             int customerId,
             int originalAccountId,
-            AccountTypes accountType
+            AccountType accountType
     ) {
         AccountDto newAccount = accountActionsAPI.createNewAccount(
                 customerId,
@@ -38,8 +38,8 @@ public class AccountsDataFactory {
     public NewAccountsForTests createTwoNewAccountsForTest(
             int customerId,
             int originalAccountId,
-            AccountTypes accountType1,
-            AccountTypes accountType2
+            AccountType accountType1,
+            AccountType accountType2
     ) {
         AccountDto newAccount1 = accountActionsAPI.createNewAccount(
                 customerId,
