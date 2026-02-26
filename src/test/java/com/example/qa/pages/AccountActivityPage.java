@@ -1,7 +1,7 @@
 package com.example.qa.pages;
 
-import com.example.qa.api.dtos.AccountDto;
 import com.example.qa.enums.AccountType;
+import com.example.qa.pages.ui_dtos.AccountActivityDto;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 
@@ -47,6 +47,12 @@ public class AccountActivityPage {
         return new BigDecimal(cleaned);
     }
 
+    public BigDecimal getAvailableBalance() {
+        String raw = availableBalanceCell.innerText().trim();
+        String cleaned = raw.replaceAll("[^0-9.\\-]", "");
+        return new BigDecimal(cleaned);
+    }
+
     public Locator getTransactionLink(int transactionId) {
         String selector = String.format("a[href*='transaction.htm?id=%d']", transactionId);
         return transactionLinks.filter(new Locator.FilterOptions().setHas(page.locator(selector)));
@@ -70,12 +76,12 @@ public class AccountActivityPage {
 
     // Actions
 
-    public AccountDto toDto (int customerId) {
-        return new AccountDto(
+    public AccountActivityDto toDto () {
+        return new AccountActivityDto(
                 getAccountId(),
-                customerId,
                 getAccountType(),
-                getBalance()
+                getBalance(),
+                getAvailableBalance()
         );
     }
 

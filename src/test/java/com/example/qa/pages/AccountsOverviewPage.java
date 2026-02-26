@@ -33,7 +33,7 @@ public class AccountsOverviewPage {
 
     //Actions
 
-    public void clickAccountNumberLinkInAccountTable(int accountNumber) {
+    public void goToAccountActivity(int accountNumber) {
         accountNumberLinkInAccountTable(String.valueOf(accountNumber)).click();
     }
 
@@ -45,7 +45,7 @@ public class AccountsOverviewPage {
         return (negative ? "-$" : "$") + absValue;
     }
 
-    public void assertThatBalanceIsVisibleAndAmountIsCorrect(int accountId, BigDecimal expectedBalance) {
+    public void assertBalanceVisibility(int accountId, BigDecimal expectedBalance) {
         assertThat(accountBalanceInTable(String.valueOf(accountId)))
                 .hasText(convertBigDecimalToExpectedBalanceString(expectedBalance));
     }

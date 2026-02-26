@@ -31,8 +31,8 @@ public class RequestLoansPage {
         this.loanProviderName = page.locator("#loanProviderName");
         this.loanDate = page.locator("#responseDate");
         this.loanStatus = page.locator("#loanStatus");
-        this.loanErrorAvailableFunds = page.getByText(UILoanApprovalMessage.INSUFFICIENT_AVAILABLE_FUNDS.message);
-        this.loanSuccessMessage = page.getByText(UILoanApprovalMessage.LOAN_APPROVED.message);
+        this.loanErrorAvailableFunds = page.getByText(UILoanApprovalMessage.INSUFFICIENT_AVAILABLE_FUNDS.getMessage());
+        this.loanSuccessMessage = page.getByText(UILoanApprovalMessage.LOAN_APPROVED.getMessage());
 
     }
 
@@ -80,7 +80,7 @@ public class RequestLoansPage {
         assertThat(loanProviderName).isVisible();
     }
 
-    public FeLoanResponseDto toDto(boolean approved) {
+    public FeLoanResponseDto availableFundsToDto(boolean approved) {
         return new FeLoanResponseDto(
                 getLoanProviderName(),
                 getLoanDate(),

@@ -58,7 +58,7 @@ public class TransfersTests extends AuthenticatedBaseTest {
         //Assert: Verify that new account's id and balance are visible in overview, and that balance is correct after transfer
         BigDecimal expectedBalanceAfterTransfer = testData.account1OriginalBalance().add(transferAmount);
         feHelper.goToOverviewAndWaitForTableVisibility();
-        accountsOverviewPage.assertThatBalanceIsVisibleAndAmountIsCorrect(testData.account1().id(), expectedBalanceAfterTransfer);
+        accountsOverviewPage.assertBalanceVisibility(testData.account1().id(), expectedBalanceAfterTransfer);
     }
 
     @ParameterizedTest(name = "User can transfer {0} from {1} account and balance correctly decreases")
@@ -79,7 +79,7 @@ public class TransfersTests extends AuthenticatedBaseTest {
         //Assert: Verify that new account's id and balance are visible in overview, and that balance is correct after transfer
         BigDecimal expectedBalanceAfterTransfer = testData.account1OriginalBalance().subtract(transferAmount);
         feHelper.goToOverviewAndWaitForTableVisibility();
-        accountsOverviewPage.assertThatBalanceIsVisibleAndAmountIsCorrect(testData.account1().id(), expectedBalanceAfterTransfer);
+        accountsOverviewPage.assertBalanceVisibility(testData.account1().id(), expectedBalanceAfterTransfer);
     }
 
     @ParameterizedTest(name = "Transaction of {0} to {1} account creates correct credit transaction record")
